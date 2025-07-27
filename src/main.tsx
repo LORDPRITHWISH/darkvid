@@ -9,7 +9,8 @@ import Profile from "./pages/profile/Profile.js";
 import Notfound from "./pages/NotFound.js";
 import Login from "./pages/login/Login.js";
 import Chanel from "./pages/chanel/Chanel.js";
-
+import About from "./pages/about/About.js";
+import Direct from "./pages/chanel/Direct.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,10 +18,12 @@ const router = createBrowserRouter(
       <Route path="" element={<Home />} />
       <Route path="app" element={<App />} />
       <Route path="login" element={<Login />} />
+      <Route path="about" element={<About />} />
 
       <Route path="@:userid" element={<Profile />} />
       <Route path="chanel/" element={<Outlet />}>
-        <Route index element={<Navigate to="/" replace />} />
+        {/* <Route index element={<Navigate to="/" replace />} /> */}
+        <Route index element={<Direct />} />
         <Route path=":userid" element={<Chanel />} />
       </Route>
       <Route path="video/" element={<Profile />}>

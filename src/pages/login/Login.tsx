@@ -3,6 +3,8 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
+import { useUserStore } from "../../store/userStore";
+
 type LoginFormInputs = {
   identity: string;
   password: string;
@@ -19,6 +21,8 @@ export default function LoginForm() {
   const [apiError, setApiError] = useState("");
 
   const navigate = useNavigate();
+
+  const setUser = useUserStore((s) => s.setUser);
 
   const onSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
@@ -37,6 +41,10 @@ export default function LoginForm() {
 
       const res = response.data;
       console.log("Logged in user:", res);
+      
+      // useUserStore.getState().setUser(res.data._id, res.data.profilePhoto);
+
+      setUser(res.data.username, res.data.profilePhoto);
 
       navigate("/"); // Redirect to home or dashboard after successful login
 
