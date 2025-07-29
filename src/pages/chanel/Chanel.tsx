@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router";
 
@@ -30,9 +30,6 @@ function Chanel() {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/v1/users/c/${userid}`, { withCredentials: true })
       .then((res) => {
-        // console.log("Channel data:", res);
-        // console.log("Channel data:", res.data);
-        // console.log("Channel data:", res.data.data);
         setChannel(res.data.data);
       })
       .catch(() => {

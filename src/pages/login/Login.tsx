@@ -44,7 +44,7 @@ export default function LoginForm() {
       
       // useUserStore.getState().setUser(res.data._id, res.data.profilePhoto);
 
-      setUser(res.data.username, res.data.profilePhoto);
+      setUser(res.data.user.username, res.data.user.profilepic);
 
       navigate("/"); // Redirect to home or dashboard after successful login
 
