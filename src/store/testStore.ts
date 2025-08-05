@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from "zustand"; 
 
 type UserState = {
   count: number;
@@ -15,3 +15,4 @@ export const useTester = create<UserState>()((set) => ({
   decrement: () => set((state) => ({ count: state.count - 1 })),
   reset: () => set({ count: 0 }),
 }));
+

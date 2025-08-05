@@ -11,12 +11,18 @@ import Login from "./pages/login/Login.js";
 import Chanel from "./pages/chanel/Chanel.js";
 import About from "./pages/about/About.js";
 import Direct from "./pages/chanel/Direct.js";
+import Video from "./pages/video/Video.js";
+import Upload from "./pages/upload/Upload.js";
+import Setdata from "./components/Setdata.js";
+import HomeLayout from "./components/HomeLayout.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="" element={<Home />} />
-      <Route path="app" element={<App />} />
+      <Route element={<HomeLayout />} >
+        <Route index element={<Home />} />
+        <Route path="app" element={<App />} />
+      </Route>
       <Route path="login" element={<Login />} />
       <Route path="about" element={<About />} />
 
@@ -26,12 +32,14 @@ const router = createBrowserRouter(
         <Route index element={<Direct />} />
         <Route path=":userid" element={<Chanel />} />
       </Route>
-      <Route path="video/" element={<Profile />}>
-        <Route path=":userid" element={<Profile />} />
+      <Route path="video/" element={<Outlet />}>
+        <Route index element={<Navigate to="/" replace />} />
+        <Route path=":userid" element={<Video />} />
       </Route>
       <Route path="tweet/" element={<Profile />}>
         <Route path=":userid" element={<Profile />} />
       </Route>
+      <Route path="upload/" element={<Upload />} />
       <Route path="subsciption/" element={<Profile />} />
       <Route path="chat/" element={<Profile />}>
         <Route path=":userid" element={<Profile />} />
@@ -48,6 +56,7 @@ if (!rootElement) {
 }
 createRoot(rootElement).render(
   <StrictMode>
+    <Setdata />
     <RouterProvider router={router} />
   </StrictMode>
 );

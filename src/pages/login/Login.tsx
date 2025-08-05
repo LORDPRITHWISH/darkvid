@@ -72,7 +72,7 @@ export default function LoginForm() {
         <div className="mb-4">
           <label className="block text-white mb-1">Email or Username</label>
           <input
-            type="text"
+            type="text" defaultValue="dead"
             {...register("identity", { required: "Email or Username is required" })}
             className="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none"
           />
@@ -81,7 +81,7 @@ export default function LoginForm() {
 
         <div className="mb-6">
           <label className="block text-white mb-1">Password</label>
-          <input type="password" {...register("password", { required: "Password is required" })} className="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none" />
+          <input type="password" defaultValue="LORD995X" {...register("password", { required: "Password is required" })} className="w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none" />
           {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
         </div>
 

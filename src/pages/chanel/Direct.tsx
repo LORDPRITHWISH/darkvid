@@ -1,11 +1,10 @@
-import React from 'react'
 import { useUserStore } from "../../store/userStore";
 import { Navigate } from "react-router";
 
 export default function Direct() {
     const userId = useUserStore((s) => s.userId);
     
-      if (!userId) return null; // Or loader
+      if (!userId) return <Navigate to="/login" replace />; 
       return <Navigate to={`/chanel/${userId}`} replace />;
 
   // return (

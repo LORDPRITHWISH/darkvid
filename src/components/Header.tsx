@@ -1,48 +1,92 @@
 // import React from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate, useLocation } from "react-router";
 import { useUserStore } from "../store/userStore";
+import { useSidebarState } from "@/store/sideStore";
+import { Menu, Search, Upload } from "lucide-react";
 
 const Header = () => {
   const userId = useUserStore((s) => s.userId);
   const profilePhoto = useUserStore((s) => s.profilePhoto);
+  const { toggle } = useSidebarState();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
-    <div className="bg-gray-800 flex h-fit ">
-      <NavLink to="/app">
-        <img src="https://i.postimg.cc/65Fws7vq/logo.png" alt="Dark Logo" className="h-20 w-20" />
-      </NavLink>
-      <div className="flex flex-col justify-between items-center text-center w-full">
-        <h1 className="text-white text-2xl font-bold">Dark</h1>
-        <nav className=" p-1">
-          <NavLink to="/" className={({ isActive }) => `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2`}>
-            Home
-          </NavLink>
-          <NavLink to="/about" className={({ isActive }) => `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `}>
-            About
-          </NavLink>
-          <NavLink
-            to="/login"
-            className={({ isActive }) =>
-              `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `
-            }
+    <div className=" flex p-1 bg-slate-950/30 top-0 sticky z-50 items-center justify-between backdrop-blur-xl">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={toggle}
+          className="p-2 m-2 rounded-xl hover:bg-gray-700 transition"
           >
-            login
-          </NavLink>
-          <NavLink
-            to="/chanel"
-            className={({ isActive }) =>
-              `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `
-            }
-          >
-            Chanel
-          </NavLink>
-        </nav>
+          
+            <Menu size={28} className="text-white" />
+          
+        </button>
+        <NavLink to="/app" className={"text-white flex items-center gap-1"}>
+
+          <img src="/Darkvid.png" alt="Dark Logo" className="h-8 flex-shrink-0" />
+          <span className="font-bold flex text-2xl">DarkVids</span>
+        </NavLink>
       </div>
-      <NavLink to="/chanel" className="ml-auto p-2">
-        <img src={profilePhoto || "https://i.postimg.cc/65Fws7vq/logo.png"} alt={userId || "dark Avatar"} className="h-20 w-20 rounded-full" />
+      <div className="flex flex-col justify-between items-center text-center w-full max-w-xl mx-auto">
+        <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search dark knowledge..."
+              className="w-full rounded-full px-4 py-2 bg-zinc-900/70 text-sm focus:outline-none"
+            />
+            <Search className="absolute top-2.5 right-3 text-gray-400" size={18} />
+          </div>
+      </div>
+      <div className="flex items-center gap-2">
+        
+      {location.pathname !== "/upload" && (
+        <button
+          className="text-white p-2 rounded-lg bg-gray-700 hover:saturate-200 transition duration-200 flex items-center "
+          onClick={() => navigate("/upload")}
+        >
+          <Upload className="mr-2" />
+          upload
+        </button>
+      )}
+      <NavLink to="/chanel" className="">
+        <img src={profilePhoto || "/profilepic.png"} alt={userId || "dark Avatar"} className="h-10 w-fit rounded-full" />
       </NavLink>
+      </div>
     </div>
   );
 };
 
 export default Header;
+
+
+
+
+
+
+
+
+{/* <nav className=" p-1">
+  <NavLink to="/" className={({ isActive }) => `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2`}>
+    Home
+  </NavLink>
+  <NavLink to="/about" className={({ isActive }) => `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `}>
+    About
+  </NavLink>
+  <NavLink
+    to="/upload"
+    className={({ isActive }) =>
+      `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `
+    }
+  >
+    Upload
+  </NavLink>
+  <NavLink
+    to="/chanel"
+    className={({ isActive }) =>
+      `${isActive ? "text-2xl !text-red-600 font-extrabold" : "text-xl text-gray-300 font-bold "} p-2 `
+    }
+  >
+    Chanel
+  </NavLink>
+</nav> */}
