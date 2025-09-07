@@ -15,6 +15,8 @@ import Video from "./pages/video/Video.js";
 import Upload from "./pages/upload/Upload.js";
 import Setdata from "./components/Setdata.js";
 import HomeLayout from "./components/HomeLayout.js";
+import { ThemeProvider } from "@/components/theme-provider"
+
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -56,7 +58,9 @@ if (!rootElement) {
 }
 createRoot(rootElement).render(
   <StrictMode>
-    <Setdata />
-    <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <Setdata />
+      <RouterProvider router={router} />
+    </ThemeProvider>
   </StrictMode>
 );

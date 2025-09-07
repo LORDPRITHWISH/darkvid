@@ -1,63 +1,111 @@
 import React from "react";
-import { ThumbsUp, ThumbsDown, Share2 } from "lucide-react";
+import {
+  ThumbsUp,
+  ThumbsDown,
+  Share2,
+  Bold,
+  Italic,
+  Underline,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 // import channelPic from "@/assets/channel.jpg";
 // import userPic from "@/assets/user.jpg";
 
 export default function WatchPage() {
   return (
-    <div className="w-screen min-h-screen bg-black text-white flex">
+    <div className="w-screen min-h-screen text-white flex ml-10 ">
       {/* LEFT: Main content */}
-      <div className="flex-1 p-4 max-w-[calc(100%-350px)]">
+      <div className="flex-1 p-4 max-w-[calc(100%-400px)]">
         {/* Video */}
         <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
-          <video className="w-full h-full" controls autoPlay src="/videos/sample.mp4" />
+          <video
+            className="w-full h-full"
+            controls
+            autoPlay
+            src="/videos/sample.mp4"
+          />
         </div>
 
         {/* Title & Meta */}
         <div className="mt-4">
-          <h1 className="text-2xl font-semibold">Darknet Explained: The Deep Truth</h1>
-          <p className="text-sm text-gray-400">1.7M views • 1 month ago</p>
+          <h1 className="text-2xl font-semibold">
+            Darknet Explained: The Deep Truth
+          </h1>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 mt-2">
-          <Button variant="outline" className="gap-2">
-            <ThumbsUp size={18} /> 24K
-          </Button>
-          <Button variant="outline" className="gap-2">
-            <ThumbsDown size={18} /> 320
-          </Button>
-          <Button variant="outline" className="gap-2">
-            <Share2 size={18} /> Share
-          </Button>
-        </div>
-
-        {/* Channel */}
-        <div className="flex justify-between items-center mt-6">
+        <div className="flex justify-between items-center mt-6 mx-4">
+          {/* Channel */}
           <div className="flex items-center gap-4">
-            <img src={"/thumb.jpg"} alt="channel" className="w-12 h-12 rounded-full" />
+            <img
+              src={"/thumb.jpg"}
+              alt="channel"
+              className="w-12 h-12 rounded-full"
+            />
             <div>
               <p className="font-medium">DarkVids Central</p>
               <p className="text-sm text-gray-400">153K subscribers</p>
             </div>
+            <Button className="bg-red-600 hover:bg-red-700 text-white">
+              Subscribe
+            </Button>
           </div>
-          <Button className="bg-red-600 hover:bg-red-700 text-white">Subscribe</Button>
+          {/* Action Buttons */}
+          <div className="flex gap-4">
+            {/* <Button
+              // variant="outline"
+              className="gap-2 ">
+              <ThumbsUp size={18} /> 24K
+            </Button>
+            <Button
+              // variant="outline"
+              className="gap-2">
+              <ThumbsDown size={18} /> 320
+            </Button> */}
+            <ToggleGroup type="single" variant={"outline"} className=" border-0 " >
+              <ToggleGroupItem
+                value="bold"
+                className="  "
+                aria-label="Toggle bold">
+                <ThumbsUp size={18} /> 24K
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="italic"
+                aria-label="Toggle italic">
+                <ThumbsDown size={18} /> 320
+              </ToggleGroupItem>
+            </ToggleGroup>
+            <Button
+              // variant="outline"
+              className="gap-2">
+              <Share2 size={18} /> Share
+            </Button>
+          </div>
         </div>
 
         {/* Description */}
-        <p className="mt-4 text-sm text-gray-300">
-          In this episode, we break down the truth behind the darknet, deep web,
-          and how anonymous networks function...
-        </p>
+        <div className="mt-4 space-y-1 bg-gray-400/10 py-4 px-8 rounded-3xl">
+          <p className=" text-gray-400">1.7M views • 1 month ago</p>
+
+          <p className=" text-gray-300">
+            In this episode, we break down the truth behind the darknet, deep
+            web, and how anonymous networks function...
+          </p>
+        </div>
 
         {/* Comments */}
         <div className="mt-8">
           <h2 className="text-lg font-semibold mb-4">Comments (89)</h2>
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex gap-3">
-                <img src={"/thumb.jpg"} alt="user" className="w-10 h-10 rounded-full" />
+              <div
+                key={i}
+                className="flex gap-3">
+                <img
+                  src={"/thumb.jpg"}
+                  alt="user"
+                  className="w-10 h-10 rounded-full"
+                />
                 <div>
                   <p className="font-medium text-sm">CyberUser_{i}</p>
                   <p className="text-sm text-gray-300">
@@ -71,14 +119,18 @@ export default function WatchPage() {
       </div>
 
       {/* RIGHT: Recommendations */}
-      <aside className="w-[350px] p-4 border-l border-gray-800 bg-[#111] h-screen overflow-y-auto">
+      <aside className="w-[350px] p-2 h-full">
         <h2 className="text-lg font-semibold mb-4">Recommended</h2>
         <div className="space-y-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="flex gap-3">
+            <div
+              key={i}
+              className="flex gap-3">
               <div className="w-32 h-20 bg-gray-700 rounded" />
               <div className="flex-1">
-                <p className="text-sm font-semibold leading-snug">Hack the Web #{i + 1}</p>
+                <p className="text-sm font-semibold leading-snug">
+                  Hack the Web #{i + 1}
+                </p>
                 <p className="text-xs text-gray-400">DarkHacks • 120K views</p>
               </div>
             </div>
