@@ -4,10 +4,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { useParams } from "react-router";
 
 const playlists = ["Dark Hack Series", "Tech Shorts", "Unlisted Secrets", "Learning AI"];
 
-export default function DetailsZone({ videoFile, thumbnail }) {
+export default function DetailsZone() {
+  const { vidid } = useParams<{ vidid: string }>();
+  const videoFile = `/videos/${vidid}.mp4`; // Example video file path
+  const thumbnail = `/thumbnails/${vidid}.jpg`; // Example thumbnail path
   const [privacy, setPrivacy] = useState("public");
   const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0]);
   const [tags, setTags] = useState<string[]>([]);
