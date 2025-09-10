@@ -16,6 +16,8 @@ import Upload from "./pages/upload/Upload.js";
 import Setdata from "./components/Setdata.js";
 import HomeLayout from "./components/HomeLayout.js";
 import { ThemeProvider } from "@/components/theme-provider"
+import Studio from "./pages/studio/Studio.js";
+// import { O } from "node_modules/react-router/dist/development/route-data-D7Xbr_Ww.mjs";
 
 
 const router = createBrowserRouter(
@@ -41,7 +43,11 @@ const router = createBrowserRouter(
       <Route path="tweet/" element={<Profile />}>
         <Route path=":userid" element={<Profile />} />
       </Route>
-      <Route path="upload/" element={<Upload />} />
+      <Route path="upload/" element={<Outlet />}>
+        <Route index element={<Studio />} />
+        <Route path=":videoid" element={<Upload />} />
+      </Route>
+      <Route path="settings/" element={<Profile />} />
       <Route path="subsciption/" element={<Profile />} />
       <Route path="chat/" element={<Profile />}>
         <Route path=":userid" element={<Profile />} />

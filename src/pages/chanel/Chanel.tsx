@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router";
+import { getUserChannel } from "@/services/user.service";
 
 type ChannelData = {
   _id: string;
@@ -25,19 +25,42 @@ function Chanel() {
   useEffect(() => {
     if (!userid) return;
 
-    console.log("Fetching channel data for:", userid);
+    // console.log("Fetching channel data for:", userid);
 
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/v1/users/c/${userid}`, { withCredentials: true })
-      .then((res) => {
-        setChannel(res.data.data);
-      })
-      .catch(() => {
+    // getUserChannel(userid).then((response) => {
+    //   console.log("api responce :", response);
+    // });
+
+    // axios
+    //   .get(`${import.meta.env.VITE_API_URL}/api/v1/users/c/${userid}`, { withCredentials: true })
+    //   .then((res) => {
+    //     setChannel(res.data.data);
+    //   })
+    //   .catch(() => {
+    //     setError("Failed to fetch channel");
+    //   })
+    //   .finally(() => {
+    //     setLoading(false);
+    //   });
+
+    const fetchChannel = async () => {
+      try {
+        const response = await getUserChannel(userid);
+        console.log("API response:", response);
+        if (response && response.data) {
+          setChannel(response.data);
+        } else {
+          setError("No data found");
+        }
+      } catch (err) {
+        console.error("Error fetching channel:", err);
         setError("Failed to fetch channel");
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchChannel();
   }, [userid]);
 
   if (loading) return <div>Loading...</div>;
@@ -45,7 +68,11 @@ function Chanel() {
 
   return (
     <div className="max-w-xl mx-auto p-4 shadow-xl rounded-xl bg-white">
-      <img src={channel.coverimage} alt="cover" className="w-full h-40 object-cover rounded-t-xl" />
+      <img
+        src={channel.coverimage}
+        alt="cover"
+        className="w-full h-40 object-cover rounded-t-xl"
+      />
       <div className="flex items-center space-x-4 -mt-10 p-4">
         <img
           src={channel.profilepic}
