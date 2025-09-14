@@ -17,6 +17,8 @@ import Setdata from "./components/Setdata.js";
 import HomeLayout from "./components/HomeLayout.js";
 import { ThemeProvider } from "@/components/theme-provider"
 import Studio from "./pages/studio/Studio.js";
+import StudioPage from "./pages/studio/Studio.js";
+import UploadVideoPage from "./pages/upload/VidUpload.js";
 // import { O } from "node_modules/react-router/dist/development/route-data-D7Xbr_Ww.mjs";
 
 
@@ -44,9 +46,10 @@ const router = createBrowserRouter(
         <Route path=":userid" element={<Profile />} />
       </Route>
       <Route path="upload/" element={<Outlet />}>
-        <Route index element={<Studio />} />
+        <Route index element={<UploadVideoPage />} />
         <Route path=":videoid" element={<Upload />} />
       </Route>
+      <Route path="studio/" element={<StudioPage />} />
       <Route path="settings/" element={<Profile />} />
       <Route path="subsciption/" element={<Profile />} />
       <Route path="chat/" element={<Profile />}>
