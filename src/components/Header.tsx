@@ -47,10 +47,10 @@ const Header = () => {
           />
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         {location.pathname !== "/upload" && (
           <button
-            className="text-white p-2 rounded-lg bg-gray-700 hover:saturate-200 transition duration-200 flex items-center "
+            className="text-white p-2 rounded-xl bg-slate-800 hover:bg-slate-600 transition duration-200 flex items-center "
             onClick={() => navigate("/upload")}>
             <Upload className="mr-2" />
             upload
@@ -58,8 +58,7 @@ const Header = () => {
         )}
         <NavLink
           to="/chanel"
-          className="">
-          {/* <img src={profilePhoto || "/profilepic.png"} alt={userId || "dark Avatar"} className="h-10 w-fit rounded-full" /> */}
+          className="mr-4">
           <Avatar>
             <AvatarImage src={profilePhoto || "/profilepic.png"} />
             <AvatarFallback>DV</AvatarFallback>
