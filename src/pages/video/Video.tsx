@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -9,14 +9,29 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useParams } from "react-router";
+import { getVideo } from "@/services/video.service";
 // import channelPic from "@/assets/channel.jpg";
 // import userPic from "@/assets/user.jpg";
 
 export default function WatchPage() {
+
+  const { videoid } = useParams();
+
+  useEffect(() => {
+    // Fetch video details using videoid
+    console.log("Fetching video details for ID:", videoid);
+
+    const videoDetails = getVideo(videoid || ""); // Fetch video details
+
+    console.log("Video details fetched", videoDetails);
+
+  }, [videoid]);
+
   return (
     <div className="w-screen min-h-screen text-white flex ml-10 ">
       {/* LEFT: Main content */}
-      <div className="flex-1 p-4 max-w-[calc(100%-400px)]">
+      <div className="flex-1 p-4 max-w-[calc(100%-550px)]">
         {/* Video */}
         <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
           <video
@@ -28,7 +43,7 @@ export default function WatchPage() {
         </div>
 
         {/* Title & Meta */}
-        <div className="mt-4">
+        <div className="mt-2">
           <h1 className="text-2xl font-semibold">
             Darknet Explained: The Deep Truth
           </h1>
@@ -62,7 +77,10 @@ export default function WatchPage() {
               className="gap-2">
               <ThumbsDown size={18} /> 320
             </Button> */}
-            <ToggleGroup type="single" variant={"outline"} className=" border-0 " >
+            <ToggleGroup
+              type="single"
+              variant={"outline"}
+              className=" border-0 ">
               <ToggleGroupItem
                 value="bold"
                 className="  "

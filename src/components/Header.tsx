@@ -24,7 +24,7 @@ const Header = () => {
           />
         </button>
         <NavLink
-          to="/app"
+          to="/"
           className={"text-white flex items-center gap-1"}>
           <img
             src="/Darkvid.png"

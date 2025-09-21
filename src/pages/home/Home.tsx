@@ -3,6 +3,8 @@
 // import { Home, Upload, Users, Video } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 
+import { useNavigate } from "react-router";
+
 const dummyVideos = [...Array(12)].map((_, i) => ({
   id: i,
   title: `Dark Hack Series - Ep ${i + 1}`,
@@ -10,24 +12,20 @@ const dummyVideos = [...Array(12)].map((_, i) => ({
   views: `${(i + 1) * 10}K`,
   date: `${i + 1} days ago`,
   thumbnail: "/thumb.jpg",
+  link: `/video/dark-hack-ep${i + 1}`,
 }));
  
 
 export default function HomePage() {
+
+  const navigate = useNavigate();
+
   return (
     <div className="w-screen min-h-screen bg-black text-white flex">
 
 
       {/* Main Content */}
       <div className="flex-1 ml-14">
-        {/* Search Bar */}
-        {/* <header className="w-full px-6 py-3 flex justify-between items-center border-b border-gray-800 bg-[#111] sticky top-0 z-40">
-          
-
-          <Button variant="outline" size="sm">
-            Profile
-          </Button>
-        </header> */}
 
         {/* Video Grid */}
         <main className="p-6">
@@ -35,7 +33,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             {dummyVideos.map((video) => (
-              <div key={video.id} className="flex flex-col">
+              <div key={video.id} className="flex flex-col" onClick={() => navigate(video.link)} >
                 <div className="w-full aspect-video bg-gray-800 rounded-lg overflow-hidden">
                   <img
                     src={video.thumbnail}
