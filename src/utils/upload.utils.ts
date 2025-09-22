@@ -6,20 +6,15 @@ import {
 import { useVideoStore } from "@/store/vidStore";
 
 export async function uploadVideo() {
-  const {
-    Video,
-    videoId,
-    uploadId,
-    setUploadProgress,
-    setParts,
-    parts,
-    setUploadStatus,
-  } = useVideoStore.getState();
+  const { Video, videoId, uploadId, setUploadProgress, setUploadStatus } =
+    useVideoStore.getState();
 
   if (!Video || !videoId || !uploadId) {
     console.error("No video file or upload details found.");
     return;
   }
+
+  const parts: { ETag: string; PartNumber: number }[] = [];
 
   const chunkSize = 5 * 1024 * 1024; // 5 MB
   const totalChunks = Math.ceil(Video.size / chunkSize);
@@ -41,8 +36,11 @@ export async function uploadVideo() {
 
     if (uploadResp && uploadResp?.headers) {
       const eTag = uploadResp?.headers?.etag;
-      if (eTag) {
-        setParts({ ETag: eTag.replace(/"/g, ""), PartNumber: partNumber });
+      if (eTag) parts.push({ ETag: eTag, PartNumber: partNumber });
+      else{
+        console.warn(`ETag not found in response for part ${partNumber}`);
+        setUploadStatus("error");
+        return;
       }
 
       setUploadProgress(Math.round((partNumber / totalChunks) * 100));
@@ -52,13 +50,20 @@ export async function uploadVideo() {
     }
   }
 
-  // Deduplicate parts before completing
   const uniqueParts = Array.from(
     new Map(parts.map((p) => [p.PartNumber, p])).values()
   );
 
-  await completeUpload(videoId, uploadId, uniqueParts);
-  setUploadStatus("completed");
+  // console.log("Completing upload with parts:", uniqueParts);
+
+  try {
+    await completeUpload(videoId, uploadId, uniqueParts);
+    setUploadStatus("completed");
+  } catch (error) {
+    console.error("Error completing upload:", error);
+    setUploadStatus("error");
+    return;
+  }
 
   console.log("Upload complete for", videoId);
 }

@@ -70,6 +70,7 @@ export const FileUpload = ({
           ref={fileInputRef}
           id="file-upload-handle"
           type="file"
+          accept="video/*"
           onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
           className="hidden"
         />
@@ -99,7 +100,7 @@ export const FileUpload = ({
               Upload Video
             </p>
             <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-base mt-2">
-              Drag or drop your files here or click to upload
+              Drag or drop your video here or click to upload
             </p>
             <div className="relative w-full mt-10 max-w-xl mx-auto">
               {files && (

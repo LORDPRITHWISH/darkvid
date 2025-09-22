@@ -58,9 +58,9 @@ export default function DetailsZone() {
 
   const Link = `${import.meta.env.VITE_Frontend_URL}/video/${videoid}`;
 
-  if (!videoid || videoid !== videoId) {
-    return <div>Invalid video ID.</div>;
-  }
+  // if (!videoid || videoid !== videoId) {
+  //   return <div>Invalid video ID.</div>;
+  // }
 
   return (
     <section className="w-full p-6 grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#0d0d0d] rounded-2xl shadow-[0_0_20px_#0ff3] border border-[#1f1f1f] text-white">

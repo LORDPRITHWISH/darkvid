@@ -20,11 +20,12 @@ export const getUploadURL = (uploadId: string, partNumber: number, videoId: stri
 }
 
 export const uploadChunk = (signedUrl: string, chunk: Blob) => {
+    console.log("the  Chunk is ",chunk.size);
   return axios(signedUrl, {
     method: "PUT",
     data: chunk,
   });
-  
+
 // const responce = apiRequest<{ data: any }>({
 //     method: "PUT",
 //     url: signedUrl,

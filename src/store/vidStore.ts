@@ -12,7 +12,7 @@ interface VideoState {
   // videoUrl: string | null;
   videoId: string | null;
   uploadId: string | null;
-  parts: { ETag: string; PartNumber: number }[]; // Array to hold uploaded part identifiers
+  // parts: { ETag: string; PartNumber: number }[]; // Array to hold uploaded part identifiers
 
   setVideo: (file: File) => void;
   setUploadProgress: (progress: number) => void;
@@ -21,7 +21,7 @@ interface VideoState {
   reset: () => void;
 
   initiateUpload: () => Promise<string | undefined>;
-    setParts: (part: { ETag: string; PartNumber: number }) => void;
+  // setParts: (part: { ETag: string; PartNumber: number }) => void;
 }
 
 export const useVideoStore = create<VideoState>()(
@@ -34,7 +34,7 @@ export const useVideoStore = create<VideoState>()(
         // videoUrl: null,
         videoId: null,
         uploadId: null,
-        parts: [],
+        // parts: [],
 
         setVideo: (file) => set({ Video: file }),
         setUploadProgress: (progress) => set({ uploadProgress: progress }),
@@ -45,6 +45,9 @@ export const useVideoStore = create<VideoState>()(
             Video: null,
             uploadProgress: 0,
             uploadStatus: "idle",
+            videoId: null,
+            uploadId: null,
+            // parts: [],
             // videoUrl: null,
           }),
 
@@ -69,7 +72,11 @@ export const useVideoStore = create<VideoState>()(
           }
         },
 
-        setParts: (part: { ETag: string; PartNumber: number }) => set((state) => ({ parts: [...state.parts, part] })),
+        // setParts: (part: { ETag: string; PartNumber: number }) =>{
+        //   console.log("Adding part:", part);
+        //   set((state) => ({ parts: [...state.parts, part] }));
+        //   // console.log("useVideoStore parts:", useVideoStore.getState().parts);
+        // }
       }),
       {
         name: "video-store", // localStorage key

@@ -14,7 +14,12 @@ export default function FileUploadDemo() {
 
   const navigator = useNavigate();
 
-  const { setVideo, setUploadStatus, initiateUpload } = useVideoStore();
+  const { setVideo, setUploadStatus, initiateUpload, reset } = useVideoStore();
+
+  useEffect(() => {
+    console.log("Component mounted so resetting store");
+    reset();
+  }, []);
 
   useEffect(() => {
     if (files) {

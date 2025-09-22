@@ -15,18 +15,23 @@ import { getVideo } from "@/services/video.service";
 // import userPic from "@/assets/user.jpg";
 
 export default function WatchPage() {
-
   const { videoid } = useParams();
+  const [videoDetails, setVideoDetails] = React.useState(null);
 
   useEffect(() => {
     // Fetch video details using videoid
-    console.log("Fetching video details for ID:", videoid);
+    const fetchVideoDetails = async () => {
+      if (!videoid) return;
+      const response = await getVideo(videoid || ""); // Fetch video details
 
-    const videoDetails = getVideo(videoid || ""); // Fetch video details
+      console.log("Video details fetched", response);
+      setVideoDetails(response?.data);
+    };
 
-    console.log("Video details fetched", videoDetails);
-
+    fetchVideoDetails();
   }, [videoid]);
+
+  console.log("Video Details:", videoDetails);
 
   return (
     <div className="w-screen min-h-screen text-white flex ml-10 ">
@@ -38,7 +43,8 @@ export default function WatchPage() {
             className="w-full h-full"
             controls
             autoPlay
-            src="/videos/sample.mp4"
+            // src="/videos/sample.mp4"
+            src={videoDetails?.playbackUrl}
           />
         </div>
 
