@@ -3,20 +3,28 @@
 // import { Home, Upload, Users, Video } from "lucide-react";
 // import { Button } from "@/components/ui/button";
 
+import { getVideo } from "@/services/home.service";
+import type { Video } from "@/types/video.types";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-const dummyVideos = [...Array(12)].map((_, i) => ({
-  id: i,
-  title: `Dark Hack Series - Ep ${i + 1}`,
-  channel: "DarkVids Central",
-  views: `${(i + 1) * 10}K`,
-  date: `${i + 1} days ago`,
-  thumbnail: "/thumb.jpg",
-  link: `/video/dark-hack-ep${i + 1}`,
-}));
  
 
 export default function HomePage() {
+
+  // console.log(getVideo());
+  const [videos, setVideos] = useState<Video[]>([]);
+  useEffect(() => {
+    getVideo()
+      .then((res) => {
+        console.log("Videos fetched:", res?.data);
+        setVideos(res?.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching videos:", err);
+      });
+  }, []);
+
 
   const navigate = useNavigate();
 
@@ -32,20 +40,20 @@ export default function HomePage() {
           <h2 className="text-xl font-semibold mb-4">🔥 Recommended for Darkness</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {dummyVideos.map((video) => (
-              <div key={video.id} className="flex flex-col" onClick={() => navigate(video.link)} >
+            {videos.map((video) => (
+              <div key={video.videoId} className="flex flex-col" onClick={() => navigate(`video/${video.videoId}`)} >
                 <div className="w-full aspect-video bg-gray-800 rounded-lg overflow-hidden">
                   <img
-                    src={video.thumbnail}
+                    src={video.thumbnailUrl || "/thumb.jpg"}
                     alt="thumbnail"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="mt-2">
-                  <p className="font-semibold text-sm leading-tight line-clamp-2">{video.title}</p>
-                  <p className="text-xs text-gray-400">{video.channel}</p>
+                  <p className="font-semibold text-sm leading-tight line-clamp-2">{video.title ?? "Untitled Video"}</p>
+                  <p className="text-xs text-gray-400">{video.ownerDetails.username}</p>
                   <p className="text-xs text-gray-500">
-                    {video.views} views • {video.date}
+                    {video.views} views • {video.createdAt}
                   </p>
                 </div>
               </div>

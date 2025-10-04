@@ -1,18 +1,15 @@
 import { initiateUpload } from "@/services/upload.service";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { devtools } from "zustand/middleware";
 
 type UploadStatus = "idle" | "uploading" | "completed" | "error";
 
 interface VideoState {
   Video: File | null;
-  uploadProgress: number; // %
+  uploadProgress: number;
   uploadStatus: UploadStatus;
-  // videoUrl: string | null;
   videoId: string | null;
   uploadId: string | null;
-  // parts: { ETag: string; PartNumber: number }[]; // Array to hold uploaded part identifiers
 
   setVideo: (file: File) => void;
   setUploadProgress: (progress: number) => void;
@@ -26,7 +23,6 @@ interface VideoState {
 
 export const useVideoStore = create<VideoState>()(
   devtools(
-    persist(
       (set) => ({
         Video: null,
         uploadProgress: 0,
@@ -71,16 +67,10 @@ export const useVideoStore = create<VideoState>()(
             set({ uploadStatus: "error" });
           }
         },
-
-        // setParts: (part: { ETag: string; PartNumber: number }) =>{
-        //   console.log("Adding part:", part);
-        //   set((state) => ({ parts: [...state.parts, part] }));
-        //   // console.log("useVideoStore parts:", useVideoStore.getState().parts);
-        // }
       }),
       {
         name: "video-store", // localStorage key
       }
-    )
+    
   )
 );

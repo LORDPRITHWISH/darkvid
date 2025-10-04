@@ -1,4 +1,4 @@
-// import { StrictMode } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
@@ -13,22 +13,21 @@ import About from "./pages/about/About.js";
 import Direct from "./pages/chanel/Direct.js";
 import Video from "./pages/video/Video.js";
 import Upload from "./pages/upload/UploadDetailsEditor.js";
-import Setdata from "./components/Setdata.js";
 import HomeLayout from "./components/HomeLayout.js";
 import { ThemeProvider } from "@/components/theme-provider"
 import StudioPage from "./pages/studio/Studio.js";
 import UploadVideoPage from "./pages/upload/VideoUpload.js";
-// import { O } from "node_modules/react-router/dist/development/route-data-D7Xbr_Ww.mjs";
+import VideoDetailsEditor from "./pages/edit/VideoDetailsEditor.js";
 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
+      <Route path="login" element={<Login />} />
       <Route element={<HomeLayout />} >
         <Route index element={<Home />} />
         <Route path="app" element={<App />} />
       </Route>
-      <Route path="login" element={<Login />} />
       <Route path="about" element={<About />} />
 
       <Route path="@:userid" element={<Profile />} />
@@ -40,6 +39,10 @@ const router = createBrowserRouter(
       <Route path="video/" element={<Outlet />}>
         <Route index element={<Navigate to="/" replace />} />
         <Route path=":videoid" element={<Video />} />
+      </Route>
+      <Route path="edit/" element={<Outlet />}>
+        <Route index element={<Navigate to="/studio" replace />} />
+        <Route path=":videoid" element={<VideoDetailsEditor />} />
       </Route>
       <Route path="tweet/" element={<Profile />}>
         <Route path=":userid" element={<Profile />} />
@@ -65,10 +68,9 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 createRoot(rootElement).render(
-  // <StrictMode>
+  <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Setdata />
       <RouterProvider router={router} />
     </ThemeProvider>
-  // </StrictMode>
+  </StrictMode>
 );

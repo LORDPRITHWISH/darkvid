@@ -3,14 +3,17 @@ import {
   ThumbsUp,
   ThumbsDown,
   Share2,
-  Bold,
-  Italic,
-  Underline,
+  Pencil,
+  // Bold,
+  // Italic,
+  // Underline,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getVideo } from "@/services/video.service";
+// import { GrEdit } from "react-icons/gr";
+
 // import channelPic from "@/assets/channel.jpg";
 // import userPic from "@/assets/user.jpg";
 
@@ -31,7 +34,8 @@ export default function WatchPage() {
     fetchVideoDetails();
   }, [videoid]);
 
-  console.log("Video Details:", videoDetails);
+  // console.log("Video Details:", videoDetails);
+  const navigate = useNavigate();
 
   return (
     <div className="w-screen min-h-screen text-white flex ml-10 ">
@@ -51,7 +55,7 @@ export default function WatchPage() {
         {/* Title & Meta */}
         <div className="mt-2">
           <h1 className="text-2xl font-semibold">
-            Darknet Explained: The Deep Truth
+            {videoDetails?.title || "Corrupting title..."}
           </h1>
         </div>
 
@@ -59,12 +63,14 @@ export default function WatchPage() {
           {/* Channel */}
           <div className="flex items-center gap-4">
             <img
-              src={"/thumb.jpg"}
+              src={videoDetails?.ownerDetails.profilepic || "/profile.jpg"}
               alt="channel"
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <p className="font-medium">DarkVids Central</p>
+              <p className="font-medium">
+                {videoDetails?.ownerDetails.username}
+              </p>
               <p className="text-sm text-gray-400">153K subscribers</p>
             </div>
             <Button className="bg-red-600 hover:bg-red-700 text-white">
@@ -73,36 +79,32 @@ export default function WatchPage() {
           </div>
           {/* Action Buttons */}
           <div className="flex gap-4">
-            {/* <Button
-              // variant="outline"
-              className="gap-2 ">
-              <ThumbsUp size={18} /> 24K
-            </Button>
             <Button
-              // variant="outline"
+              variant="secondary"
+              onClick={() => navigate(`/edit/${videoid}`)}
               className="gap-2">
-              <ThumbsDown size={18} /> 320
-            </Button> */}
+              <Pencil /> Edit
+            </Button>
             <ToggleGroup
               type="single"
               variant={"outline"}
               className=" border-0 ">
               <ToggleGroupItem
                 value="bold"
-                className="  "
+                className=" border "
                 aria-label="Toggle bold">
-                <ThumbsUp size={18} /> 24K
+                <ThumbsUp /> 24K
               </ToggleGroupItem>
               <ToggleGroupItem
                 value="italic"
+                className=" border "
                 aria-label="Toggle italic">
-                <ThumbsDown size={18} /> 320
+                <ThumbsDown /> 320
               </ToggleGroupItem>
             </ToggleGroup>
             <Button
-              // variant="outline"
               className="gap-2">
-              <Share2 size={18} /> Share
+              <Share2 /> Share
             </Button>
           </div>
         </div>
@@ -112,9 +114,11 @@ export default function WatchPage() {
           <p className=" text-gray-400">1.7M views • 1 month ago</p>
 
           <p className=" text-gray-300">
-            In this episode, we break down the truth behind the darknet, deep
-            web, and how anonymous networks function...
+            {videoDetails?.description || "No description available."}
           </p>
+          {/* <p className=" text-gray-300">
+            #darkvid #darkhacks #coding #programming #react #nodejs #webdevelopment
+          </p> */}
         </div>
 
         {/* Comments */}

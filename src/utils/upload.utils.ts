@@ -1,6 +1,7 @@
 import {
   completeUpload,
   getUploadURL,
+  setThumbnail,
   uploadChunk,
 } from "@/services/upload.service";
 import { useVideoStore } from "@/store/vidStore";
@@ -37,7 +38,7 @@ export async function uploadVideo() {
     if (uploadResp && uploadResp?.headers) {
       const eTag = uploadResp?.headers?.etag;
       if (eTag) parts.push({ ETag: eTag, PartNumber: partNumber });
-      else{
+      else {
         console.warn(`ETag not found in response for part ${partNumber}`);
         setUploadStatus("error");
         return;
@@ -66,4 +67,27 @@ export async function uploadVideo() {
   }
 
   console.log("Upload complete for", videoId);
+}
+
+export async function uploadThumbnail(file: File, videoId: string) {
+
+  // console.log("Uploading thumbnail for", videoId, file);
+
+  if (!file || !videoId) {
+    console.error("No thumbnail file or video ID found.");
+    return;
+  }
+
+  const response = await setThumbnail(videoId);
+
+  if (response?.data?.uploadURL) {
+    try {
+      await uploadChunk(response.data.uploadURL, file);
+      console.log("Thumbnail uploaded successfully for", videoId);
+    } catch (error) {
+      console.error("Error uploading thumbnail:", error);
+    }
+  } else {
+    console.error("No upload URL received for thumbnail.");
+  }
 }

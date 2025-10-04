@@ -16,3 +16,10 @@ export const getProfile = () => {
     url: `/users/profile`,
   });
 }
+
+export const refreshToken = () => {
+  return apiRequest<{ data: any }>({
+    method: "POST",
+    url: `/users/refresh_token`,
+  });
+}
