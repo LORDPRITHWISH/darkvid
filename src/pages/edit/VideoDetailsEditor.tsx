@@ -16,13 +16,6 @@ import { uploadThumbnail } from "@/utils/upload.utils";
 import { debounce } from "lodash";
 import { setVideoData } from "@/services/upload.service";
 
-// const playlists = [
-//   "Dark Hack Series",
-//   "Tech Shorts",
-//   "Unlisted Secrets",
-//   "Learning AI",
-// ];
-
 export default function DetailsZone() {
   const { videoid } = useParams<{ videoid: string }>();
   // const [videoDetails, setVideoDetails] = useState<any>(null);
@@ -32,19 +25,20 @@ export default function DetailsZone() {
   const [uploadDate, setUploadDate] = useState("");
   const [thumbnail, setThumbnail] = useState<string>("");
   const [videoLink, setVideoLink] = useState<string>("");
-  
+
   const [newTag, setNewTag] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [privacy, setPrivacy] = useState("public");
 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchVideoDetails = async () => {
       if (!videoid) return;
       const response = await getVideoDetails(videoid || "");
-      console.log("Video details fetched", response);
+      // console.log("Video details fetched", response);
       // setVideoDetails(response?.data);
       setThumbnail(response?.data?.thumbnailUrl || "/thumb.jpg");
       setTitle(response?.data?.title || "");
@@ -68,7 +62,10 @@ export default function DetailsZone() {
     () =>
       debounce((newTitle: string) => {
         if (!videoid) return;
-        setVideoData(videoid, { title: newTitle });
+        setLoading(true);
+        setVideoData(videoid, { title: newTitle }).finally(() =>
+          setLoading(false)
+        );
       }, 500),
     [videoid]
   );
@@ -77,30 +74,23 @@ export default function DetailsZone() {
     () =>
       debounce((description: string) => {
         if (!videoid) return;
-        setVideoData(videoid, { description });
+        setLoading(true);
+        setVideoData(videoid, { description }).finally(() => setLoading(false));
       }, 500),
     [videoid]
   );
 
-  useEffect(() => {
-    if (!videoid) return;
-    setVideoData(videoid, { privacy });
-  }, [privacy, videoid]);
-
-  useEffect(() => {
-    if (!videoid) return;
-    setVideoData(videoid, { tags });
-  }, [tags, videoid]);
-
-  useEffect(() => {
-    if (!videoid) return;
-    if (uploadDate) {
-      const isoDate = new Date(uploadDate).toISOString();
-      setVideoData(videoid, { uploadDate: isoDate });
-    } else {
-      setVideoData(videoid, { uploadDate: null });
-    }
-  }, [uploadDate, videoid]);
+  const setDetail = useMemo(
+    () =>
+      debounce((field: string, value: string | string[]) => {
+        if (!videoid) return;
+        setLoading(true);
+        setVideoData(videoid, { [field]: value }).finally(() =>
+          setLoading(false)
+        );
+      }, 500),
+    [videoid]
+  );
 
   const handleRemoveTag = (tag: string) => {
     setTags(tags.filter((t) => t !== tag));
@@ -171,7 +161,10 @@ export default function DetailsZone() {
               rows={5}
               className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500"
               value={description}
-              onChange={(e) => { setDescription(e.target.value); uploadDescription(e.target.value); }}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                uploadDescription(e.target.value);
+              }}
             />
           </div>
 
@@ -181,7 +174,10 @@ export default function DetailsZone() {
             <div className="flex gap-2">
               <Input
                 value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
+                onChange={(e) => {
+                  setNewTag(e.target.value);
+                  setDetail("tags", [...tags, e.target.value]);
+                }}
                 placeholder="Add a tag and press Enter"
                 onKeyDown={(e) =>
                   e.key === "Enter" && (e.preventDefault(), handleAddTag())
@@ -225,7 +221,10 @@ export default function DetailsZone() {
                         ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]"
                         : "bg-transparent hover:bg-cyan-900"
                     )}
-                    onClick={() => setPrivacy(p)}>
+                    onClick={() => {
+                      setPrivacy(p);
+                      setDetail("privacy", p);
+                    }}>
                     {p}
                   </button>
                 ))}
@@ -253,7 +252,8 @@ export default function DetailsZone() {
             <video
               src={videoLink}
               controls
-              className="rounded-xl w-full border border-[#333] shadow-[0_0_12px_#0ff3]"
+              // className="rounded-xl w-full border border-[#333] shadow-[0_0_12px_#0ff3]"
+              className="rounded-xl w-full shadow-[0_0_12px_#0ff3]"
             />
             <div className="text-xs text-gray-400 bg-slate-800 w-fit px-4 py-2 rounded">
               Open at:
@@ -270,7 +270,7 @@ export default function DetailsZone() {
 
           {/* Action Buttons */}
           <div className="flex mt-auto justify-between items-center">
-            <div className="text-gray-400 text-sm">unsaved changes...</div>
+            <div className="text-gray-400 text-sm">{loading?"Saving changes...":"Saved"}</div>
             <div className="flex gap-4 flex-row w-xl">
               <button className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white ">
                 Save as Draft
