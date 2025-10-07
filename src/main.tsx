@@ -68,9 +68,9 @@ if (!rootElement) {
   throw new Error("Root element not found");
 }
 createRoot(rootElement).render(
-  <StrictMode>
+  // <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
-  </StrictMode>
+  // </StrictMode>
 );

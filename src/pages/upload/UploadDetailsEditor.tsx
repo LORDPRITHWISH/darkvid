@@ -28,7 +28,12 @@ export default function DetailsZone() {
   const { videoid } = useParams<{ videoid: string }>();
   const { Video, uploadProgress, uploadStatus, videoId } = useVideoStore();
 
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const [privacy, setPrivacy] = useState("public");
   const [selectedPlaylist, setSelectedPlaylist] = useState(playlists[0]);
@@ -36,7 +41,7 @@ export default function DetailsZone() {
   const [newTag, setNewTag] = useState("");
   const [uploadDate, setUploadDate] = useState("");
   const [duration, setDuration] = useState<number | null>(null);
-  const [videoDetails, setVideoDetails] = useState<any>(null);
+  // const [videoDetails, setVideoDetails] = useState<any>(null);
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
 
   // Memoized video URL to prevent reload
@@ -55,21 +60,55 @@ export default function DetailsZone() {
   // Initialize default title only once
   useEffect(() => {
     if (Video?.name) {
-      setVideoDetails((prev: any) => ({
-        ...prev,
-        title: Video.name,
-      }));
+      setTitle(Video.name);
     }
   }, [Video]);
 
-  // Debounced backend title update
-  const updateTitle = useMemo(
+  const uploadTitle = useMemo(
     () =>
       debounce((newTitle: string) => {
-        if (videoid) setVideoData(videoid, { title: newTitle });
-      }, 800),
+        if (!videoid) return;
+        setLoading(true);
+        setVideoData(videoid, { title: newTitle }).finally(() =>
+          setLoading(false)
+        );
+      }, 500),
     [videoid]
   );
+
+  const uploadDescription = useMemo(
+    () =>
+      debounce((description: string) => {
+        if (!videoid) return;
+        setLoading(true);
+        setVideoData(videoid, { description }).finally(() => setLoading(false));
+      }, 500),
+    [videoid]
+  );
+
+  const setDetail = useMemo(
+    () =>
+      debounce((field: string, value: string | string[]) => {
+        if (!videoid) return;
+        setLoading(true);
+        setVideoData(videoid, { [field]: value }).finally(() =>
+          setLoading(false)
+        );
+      }, 500),
+    [videoid]
+  );
+
+  // const handleRemoveTag = (tag: string) => {
+  //   setTags(tags.filter((t) => t !== tag));
+  // };
+
+  const publishVideo = () => {
+    if (!videoid) return;
+    setLoading(true);
+    setVideoData(videoid, { isPublished: true, privacy }).finally(() =>
+      setLoading(false)
+    );
+  };
 
   // Handle duration upload
   useEffect(() => {
@@ -91,7 +130,6 @@ export default function DetailsZone() {
       uploadVideo();
     }
   }, []);
-  
 
   const handleAddTag = () => {
     if (newTag && !tags.includes(newTag)) {
@@ -117,11 +155,11 @@ export default function DetailsZone() {
             <Input
               placeholder="Catchy title here..."
               className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500"
-              value={videoDetails?.title || ""}
+              value={title || ""}
               onChange={(e) => {
                 const newTitle = e.target.value;
-                setVideoDetails({ ...videoDetails, title: newTitle });
-                updateTitle(newTitle);
+                setTitle(newTitle);
+                uploadTitle(newTitle);
               }}
             />
           </div>
@@ -135,13 +173,17 @@ export default function DetailsZone() {
           {/* Playlist */}
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-cyan-300">Playlist</Label>
-            <Select value={selectedPlaylist} onValueChange={setSelectedPlaylist}>
+            <Select
+              value={selectedPlaylist}
+              onValueChange={setSelectedPlaylist}>
               <SelectTrigger className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500">
                 {selectedPlaylist}
               </SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border border-[#333] text-white">
                 {playlists.map((p) => (
-                  <SelectItem key={p} value={p}>
+                  <SelectItem
+                    key={p}
+                    value={p}>
                     {p}
                   </SelectItem>
                 ))}
@@ -156,6 +198,12 @@ export default function DetailsZone() {
               placeholder="Describe the video in detail..."
               rows={5}
               className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500"
+              value={description || ""}
+              onChange={(e) => {
+                const desc = e.target.value;
+                setDescription(desc);
+                uploadDescription(desc);
+              }}
             />
           </div>
 
@@ -174,8 +222,7 @@ export default function DetailsZone() {
               />
               <button
                 onClick={handleAddTag}
-                className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400"
-              >
+                className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400">
                 Add
               </button>
             </div>
@@ -183,13 +230,11 @@ export default function DetailsZone() {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                >
+                  className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2">
                   {tag}
                   <button
                     onClick={() => handleRemoveTag(tag)}
-                    className="text-black hover:text-red-600"
-                  >
+                    className="text-black hover:text-red-600">
                     ✕
                   </button>
                 </span>
@@ -212,8 +257,7 @@ export default function DetailsZone() {
                         ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]"
                         : "bg-transparent hover:bg-cyan-900"
                     )}
-                    onClick={() => setPrivacy(p)}
-                  >
+                    onClick={() => setPrivacy(p)}>
                     {p}
                   </button>
                 ))}
@@ -251,8 +295,7 @@ export default function DetailsZone() {
                   "text-cyan-400": uploadStatus === "uploading",
                   "text-green-400": uploadStatus === "completed",
                   "text-red-400": uploadStatus === "error",
-                })}
-              >
+                })}>
                 {uploadStatus === "uploading" &&
                   `Uploading... ${uploadProgress}%`}
                 {uploadStatus === "completed" && "Upload completed!"}
@@ -265,8 +308,7 @@ export default function DetailsZone() {
                 <a
                   href={Link}
                   target="_blank"
-                  className="text-cyan-400 hover:underline break-all"
-                >
+                  className="text-cyan-400 hover:underline break-all">
                   {Link}
                 </a>
               </div>
@@ -275,15 +317,17 @@ export default function DetailsZone() {
 
           {/* Buttons */}
           <div className="flex mt-auto justify-between items-center">
-            <div className="text-gray-500 text-sm">Auto-saving...</div>
+            <div className="text-gray-400 text-sm">
+              {loading ? "Saving changes..." : "Saved"}
+            </div>
             <div className="flex gap-4 w-full">
-              <button className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white">
-                Save as Draft
+              <button className=" py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-32 " onClick={() => navigate("/studio")} disabled={loading}>
+                Finish Later
               </button>
-              <button className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white">
+              {/* <button className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white">
                 Schedule
-              </button>
-              <button className="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_10px_#0ff3]">
+              </button> */}
+              <button className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 " onClick={publishVideo} disabled={loading}>
                 Publish
               </button>
             </div>

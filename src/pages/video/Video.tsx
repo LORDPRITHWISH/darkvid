@@ -27,14 +27,12 @@ export default function WatchPage() {
       if (!videoid) return;
       const response = await getVideo(videoid || ""); // Fetch video details
 
-      // console.log("Video details fetched", response);
       setVideoDetails(response?.data);
     };
 
     fetchVideoDetails();
   }, [videoid]);
 
-  // console.log("Video Details:", videoDetails);
   const navigate = useNavigate();
 
   return (

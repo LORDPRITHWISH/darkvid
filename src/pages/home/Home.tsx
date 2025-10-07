@@ -21,7 +21,7 @@ export default function HomePage() {
 
   const navigate = useNavigate();
 
-  function formatDuration(sec) {
+  function formatDuration(sec: number): string {
     const totalSeconds = Math.floor(sec);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);

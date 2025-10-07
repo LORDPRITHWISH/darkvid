@@ -1,50 +1,50 @@
-// import axios from "axios";
+import { useEffect } from "react";
 import { getProfile, refreshToken } from "@/services/user.service";
 import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router";
+// import { log } from "console";
 
-function Setdata() {
-  // console.log("Setdata component rendered");
+export default function Setdata() {
   const setUser = useUserStore((state) => state.setUser);
+  const logout = useUserStore((s) => s.logout);
   const navigate = useNavigate();
 
-  async function fetchUserData() {
-    try {
-      const response = await getProfile();
+  useEffect(() => {
+    let isMounted = true;
 
-      // console.log("User profile response:", response);
-      
-      if (response && response.data) {
-        // setUser(response.data);
-        setUser(response.data.username, response.data.profilepic);
-        return
-      } 
-      
-      const refreshedResponse = await refreshToken();
-      
-      console.log("Refresh token response:", refreshedResponse);
-      console.log("hello fucker");
+    async function fetchUserData() {
+      try {
+        const response = await getProfile();
 
-      if (refreshedResponse && refreshedResponse.data) {
-        const retryResponse = await getProfile();
-        if (retryResponse && retryResponse.data) {
-          setUser(retryResponse.data.username, retryResponse.data.profilepic);
-          return
+        if (response?.data && isMounted) {
+          setUser(response.data.username, response.data.profilepic);
+          return;
         }
+
+        const refreshedResponse = await refreshToken();
+        if (refreshedResponse?.data && isMounted) {
+          const retryResponse = await getProfile();
+          if (retryResponse?.data) {
+            setUser(retryResponse.data.username, retryResponse.data.profilepic);
+            return;
+          }
+        }
+
+        if (isMounted) {
+          // setUser("", "");
+          logout();
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
       }
-
-        setUser("", "");
-        navigate("/login");
-        
-      
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
     }
-  }
 
-  fetchUserData();
+    fetchUserData();
+    return () => {
+      isMounted = false;
+    };
+  }, [navigate, setUser]);
 
   return null;
 }
-
-export default Setdata;

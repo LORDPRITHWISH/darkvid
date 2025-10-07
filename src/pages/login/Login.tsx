@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
 import { useUserStore } from "../../store/userStore";
@@ -23,6 +23,13 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const setUser = useUserStore((s) => s.setUser);
+  const userId = useUserStore((s) => s.userId);
+
+  useEffect(() => {
+    if (userId) {
+      navigate("/");
+    }
+  }, [userId, navigate]);
 
   const onSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
@@ -59,8 +66,6 @@ export default function LoginForm() {
       setLoading(false);
     }
   };
-
-  // console.log(import.meta.env.VITE_API_URL);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-gray-900">

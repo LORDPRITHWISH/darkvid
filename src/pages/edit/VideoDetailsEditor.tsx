@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 //   SelectItem,
 // } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { getVideoDetails } from "@/services/video.service";
 import ImageUpload from "@/components/upload/ImageUpload";
 import { uploadThumbnail } from "@/utils/upload.utils";
@@ -31,20 +31,22 @@ export default function DetailsZone() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [privacy, setPrivacy] = useState("public");
+  const [isPublished, setIsPublished] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVideoDetails = async () => {
       if (!videoid) return;
       const response = await getVideoDetails(videoid || "");
-      // console.log("Video details fetched", response);
-      // setVideoDetails(response?.data);
+      console.log("Video details fetched", response);
       setThumbnail(response?.data?.thumbnailUrl || "/thumb.jpg");
       setTitle(response?.data?.title || "");
       setPrivacy(response?.data?.privacy || "public");
       setDescription(response?.data?.description || "");
-      // setSelectedPlaylist(response?.data?.playlist || playlists[0]);
+      setIsPublished(response?.data?.isPublished || false);
       setTags(response?.data?.tags || []);
       setVideoLink(response?.data?.playbackUrl || "");
     };
@@ -270,18 +272,32 @@ export default function DetailsZone() {
 
           {/* Action Buttons */}
           <div className="flex mt-auto justify-between items-center">
-            <div className="text-gray-400 text-sm">{loading?"Saving changes...":"Saved"}</div>
-            <div className="flex gap-4 flex-row w-xl">
-              <button className="w-full py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white ">
-                Save as Draft
-              </button>
-              <button className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white ">
-                Schedule
-              </button>
-              <button className="w-full py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-black shadow-[0_0_10px_#0ff3] ">
-                Publish
-              </button>
+            <div className="text-gray-400 text-sm">
+              {loading ? "Saving changes..." : "Saved"}
             </div>
+            {isPublished ? (
+              <div className="flex gap-4 flex-row w-fit">
+                <button
+                  className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 "
+                  onClick={() => {
+                    navigate(-1);
+                  }}>
+                  close
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-4 flex-row w-fit">
+                <button className=" py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-32 " onClick={() => navigate("/studio")} disabled={loading}>
+                  Finish Later
+                </button>
+                {/* <button className=" py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white w-32 ">
+                  Schedule
+                </button> */}
+                <button className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 ">
+                  Publish
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
