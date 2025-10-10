@@ -65,9 +65,7 @@ export default function DetailsZone() {
       debounce((newTitle: string) => {
         if (!videoid) return;
         setLoading(true);
-        setVideoData(videoid, { title: newTitle }).finally(() =>
-          setLoading(false)
-        );
+        setVideoData(videoid, { title: newTitle }).finally(() => setLoading(false));
       }, 500),
     [videoid]
   );
@@ -87,16 +85,23 @@ export default function DetailsZone() {
       debounce((field: string, value: string | string[]) => {
         if (!videoid) return;
         setLoading(true);
-        setVideoData(videoid, { [field]: value }).finally(() =>
-          setLoading(false)
-        );
+        setVideoData(videoid, { [field]: value }).finally(() => setLoading(false));
       }, 500),
     [videoid]
   );
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
+    const updatedTags = tags.filter((t) => t !== tag);
+    setTags(updatedTags);
+    setDetail("tags", updatedTags);
   };
+
+    const publishVideo = () => {
+      if (!videoid) return;
+      setLoading(true);
+      setVideoData(videoid, { isPublished: true, privacy }).finally(() => setLoading(false));
+      navigate("/studio");
+    };
 
   const Link = `${import.meta.env.VITE_Frontend_URL}/video/${videoid}`;
 
@@ -128,10 +133,7 @@ export default function DetailsZone() {
           {/* Thumbnail */}
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-cyan-300">Thumbnail</Label>
-            <ImageUpload
-              initialImage={thumbnail}
-              onFileChange={setThumbnailFile}
-            />
+            <ImageUpload initialImage={thumbnail} onFileChange={setThumbnailFile} />
           </div>
 
           {/* Playlist */}
@@ -181,26 +183,18 @@ export default function DetailsZone() {
                   setDetail("tags", [...tags, e.target.value]);
                 }}
                 placeholder="Add a tag and press Enter"
-                onKeyDown={(e) =>
-                  e.key === "Enter" && (e.preventDefault(), handleAddTag())
-                }
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
                 className="bg-[#111] border border-[#333] w-60"
               />
-              <button
-                onClick={handleAddTag}
-                className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400">
+              <button onClick={handleAddTag} className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400">
                 Add
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                <span key={tag} className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2">
                   {tag}
-                  <button
-                    onClick={() => handleRemoveTag(tag)}
-                    className="text-black hover:text-red-600">
+                  <button onClick={() => handleRemoveTag(tag)} className="text-black hover:text-red-600">
                     ✕
                   </button>
                 </span>
@@ -219,9 +213,7 @@ export default function DetailsZone() {
                     key={p}
                     className={cn(
                       "px-4 py-2 rounded-full border border-cyan-500 text-sm capitalize transition",
-                      privacy === p
-                        ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]"
-                        : "bg-transparent hover:bg-cyan-900"
+                      privacy === p ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]" : "bg-transparent hover:bg-cyan-900"
                     )}
                     onClick={() => {
                       setPrivacy(p);
@@ -260,10 +252,7 @@ export default function DetailsZone() {
             <div className="text-xs text-gray-400 bg-slate-800 w-fit px-4 py-2 rounded">
               Open at:
               <div className="mt-1 text-sm">
-                <a
-                  href={Link}
-                  target="_blank"
-                  className="text-cyan-400 hover:underline break-all">
+                <a href={Link} target="_blank" className="text-cyan-400 hover:underline break-all">
                   {Link}
                 </a>
               </div>
@@ -272,9 +261,7 @@ export default function DetailsZone() {
 
           {/* Action Buttons */}
           <div className="flex mt-auto justify-between items-center">
-            <div className="text-gray-400 text-sm">
-              {loading ? "Saving changes..." : "Saved"}
-            </div>
+            <div className="text-gray-400 text-sm">{loading ? "Saving changes..." : "Saved"}</div>
             {isPublished ? (
               <div className="flex gap-4 flex-row w-fit">
                 <button
@@ -293,9 +280,7 @@ export default function DetailsZone() {
                 {/* <button className=" py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white w-32 ">
                   Schedule
                 </button> */}
-                <button className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 ">
-                  Publish
-                </button>
+                <button className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 " onClick={publishVideo} disabled={loading}>Publish</button>
               </div>
             )}
           </div>

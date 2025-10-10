@@ -4,9 +4,11 @@ import { devtools } from "zustand/middleware";
 
 type UserState = {
   userId: string | null;
+  name: string | null;
+  email: string | null;
   profilePhoto: string | null;
 
-  setUser: (id: string, photo: string) => void;
+  setUser: (userId: string, name: string, profilePhoto: string, email: string) => void;
   logout: () => void;
 };
 
@@ -16,9 +18,12 @@ export const useUserStore = create<UserState>()(
       (set) => ({
         userId: null,
         profilePhoto: null,
+        username: null,
+        email: null,
+        name: null,
 
-        setUser: (id, photo) => set({ userId: id, profilePhoto: photo }),
-        logout: () => set({ userId: null, profilePhoto: null }),
+        setUser: (userId, name, profilePhoto, email) => set({ userId, name, profilePhoto,  email }),
+        logout: () => set({ userId: null, name: null, profilePhoto: null, email: null }),
       }),
       {
         name: "user-store", // localStorage key

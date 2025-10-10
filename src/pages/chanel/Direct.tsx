@@ -3,6 +3,7 @@ import { Navigate } from "react-router";
 
 export default function Direct() {
     const userId = useUserStore((s) => s.userId);
+
     
       if (!userId) return <Navigate to="/login" replace />; 
       return <Navigate to={`/chanel/${userId}`} replace />;

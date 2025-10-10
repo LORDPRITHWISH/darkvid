@@ -17,15 +17,15 @@ export default function Setdata() {
         const response = await getProfile();
 
         if (response?.data && isMounted) {
-          setUser(response.data.username, response.data.profilepic);
+          setUser(response.data.username, response.data.name, response.data.profilepic, response.data.email);
           return;
         }
-
+        
         const refreshedResponse = await refreshToken();
         if (refreshedResponse?.data && isMounted) {
           const retryResponse = await getProfile();
-          if (retryResponse?.data) {
-            setUser(retryResponse.data.username, retryResponse.data.profilepic);
+          if (retryResponse?.data && isMounted) {
+            setUser(retryResponse.data.id, retryResponse.data.name, retryResponse.data.profilepic, retryResponse.data.email);
             return;
           }
         }

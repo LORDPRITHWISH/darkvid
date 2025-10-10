@@ -2,12 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+import { Select, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { useNavigate, useParams } from "react-router";
 import { useVideoStore } from "@/store/vidStore";
@@ -17,12 +12,7 @@ import ImageUpload from "@/components/upload/ImageUpload";
 import { setVideoData } from "@/services/upload.service";
 import { debounce } from "lodash";
 
-const playlists = [
-  "Dark Hack Series",
-  "Tech Shorts",
-  "Unlisted Secrets",
-  "Learning AI",
-];
+const playlists = ["Dark Hack Series", "Tech Shorts", "Unlisted Secrets", "Learning AI"];
 
 export default function DetailsZone() {
   const { videoid } = useParams<{ videoid: string }>();
@@ -69,9 +59,7 @@ export default function DetailsZone() {
       debounce((newTitle: string) => {
         if (!videoid) return;
         setLoading(true);
-        setVideoData(videoid, { title: newTitle }).finally(() =>
-          setLoading(false)
-        );
+        setVideoData(videoid, { title: newTitle }).finally(() => setLoading(false));
       }, 500),
     [videoid]
   );
@@ -91,9 +79,7 @@ export default function DetailsZone() {
       debounce((field: string, value: string | string[]) => {
         if (!videoid) return;
         setLoading(true);
-        setVideoData(videoid, { [field]: value }).finally(() =>
-          setLoading(false)
-        );
+        setVideoData(videoid, { [field]: value }).finally(() => setLoading(false));
       }, 500),
     [videoid]
   );
@@ -105,9 +91,8 @@ export default function DetailsZone() {
   const publishVideo = () => {
     if (!videoid) return;
     setLoading(true);
-    setVideoData(videoid, { isPublished: true, privacy }).finally(() =>
-      setLoading(false)
-    );
+    setVideoData(videoid, { isPublished: true, privacy }).finally(() => setLoading(false));
+    navigate("/studio");
   };
 
   // Handle duration upload
@@ -139,7 +124,9 @@ export default function DetailsZone() {
   };
 
   const handleRemoveTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
+    const updatedTags = tags.filter((t) => t !== tag);
+    setTags(updatedTags);
+    setDetail("tags", updatedTags);
   };
 
   const Link = `${import.meta.env.VITE_Frontend_URL}/video/${videoid}`;
@@ -173,17 +160,11 @@ export default function DetailsZone() {
           {/* Playlist */}
           <div className="flex flex-col gap-2">
             <Label className="text-sm text-cyan-300">Playlist</Label>
-            <Select
-              value={selectedPlaylist}
-              onValueChange={setSelectedPlaylist}>
-              <SelectTrigger className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500">
-                {selectedPlaylist}
-              </SelectTrigger>
+            <Select value={selectedPlaylist} onValueChange={setSelectedPlaylist}>
+              <SelectTrigger className="bg-[#111] border border-[#333] focus:ring-2 focus:ring-cyan-500">{selectedPlaylist}</SelectTrigger>
               <SelectContent className="bg-[#1a1a1a] border border-[#333] text-white">
                 {playlists.map((p) => (
-                  <SelectItem
-                    key={p}
-                    value={p}>
+                  <SelectItem key={p} value={p}>
                     {p}
                   </SelectItem>
                 ))}
@@ -213,28 +194,23 @@ export default function DetailsZone() {
             <div className="flex gap-2">
               <Input
                 value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
+                onChange={(e) => {
+                  setNewTag(e.target.value);
+                  setDetail("tags", [...tags, e.target.value]);
+                }}
                 placeholder="Add a tag and press Enter"
-                onKeyDown={(e) =>
-                  e.key === "Enter" && (e.preventDefault(), handleAddTag())
-                }
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleAddTag())}
                 className="bg-[#111] border border-[#333] w-60"
               />
-              <button
-                onClick={handleAddTag}
-                className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400">
+              <button onClick={handleAddTag} className="px-4 py-2 bg-cyan-600 rounded-md text-black hover:bg-cyan-400">
                 Add
               </button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                <span key={tag} className="bg-cyan-500 text-black px-3 py-1 rounded-full text-sm flex items-center gap-2">
                   {tag}
-                  <button
-                    onClick={() => handleRemoveTag(tag)}
-                    className="text-black hover:text-red-600">
+                  <button onClick={() => handleRemoveTag(tag)} className="text-black hover:text-red-600">
                     ✕
                   </button>
                 </span>
@@ -253,11 +229,12 @@ export default function DetailsZone() {
                     key={p}
                     className={cn(
                       "px-4 py-2 rounded-full border border-cyan-500 text-sm capitalize transition",
-                      privacy === p
-                        ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]"
-                        : "bg-transparent hover:bg-cyan-900"
+                      privacy === p ? "bg-cyan-500 text-black shadow-[0_0_10px_#0ff3]" : "bg-transparent hover:bg-cyan-900"
                     )}
-                    onClick={() => setPrivacy(p)}>
+                    onClick={() => {
+                      setPrivacy(p);
+                      setDetail("privacy", p);
+                    }}>
                     {p}
                   </button>
                 ))}
@@ -296,8 +273,7 @@ export default function DetailsZone() {
                   "text-green-400": uploadStatus === "completed",
                   "text-red-400": uploadStatus === "error",
                 })}>
-                {uploadStatus === "uploading" &&
-                  `Uploading... ${uploadProgress}%`}
+                {uploadStatus === "uploading" && `Uploading... ${uploadProgress}%`}
                 {uploadStatus === "completed" && "Upload completed!"}
                 {uploadStatus === "error" && "Error during upload."}
               </div>
@@ -305,10 +281,7 @@ export default function DetailsZone() {
             <div className="text-xs text-gray-400 bg-slate-800 w-fit px-4 py-2 rounded">
               Open at:
               <div className="mt-1 text-sm">
-                <a
-                  href={Link}
-                  target="_blank"
-                  className="text-cyan-400 hover:underline break-all">
+                <a href={Link} target="_blank" className="text-cyan-400 hover:underline break-all">
                   {Link}
                 </a>
               </div>
@@ -317,10 +290,8 @@ export default function DetailsZone() {
 
           {/* Buttons */}
           <div className="flex mt-auto justify-between items-center">
-            <div className="text-gray-400 text-sm">
-              {loading ? "Saving changes..." : "Saved"}
-            </div>
-            <div className="flex gap-4 w-full">
+            <div className="text-gray-400 text-sm">{loading ? "Saving changes..." : "Saved"}</div>
+            <div className="flex gap-4 w-fit">
               <button className=" py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-white w-32 " onClick={() => navigate("/studio")} disabled={loading}>
                 Finish Later
               </button>

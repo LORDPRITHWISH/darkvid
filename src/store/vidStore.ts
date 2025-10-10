@@ -2,7 +2,7 @@ import { initiateUpload } from "@/services/upload.service";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type UploadStatus = "idle" | "uploading" | "completed" | "error";
+type UploadStatus = "idle" | "uploading" | "completed" | "failed";
 
 interface VideoState {
   Video: File | null;
@@ -64,7 +64,7 @@ export const useVideoStore = create<VideoState>()(
             }
           } catch (error) {
             console.error("Failed to initiate upload:", error);
-            set({ uploadStatus: "error" });
+            set({ uploadStatus: "failed" });
           }
         },
       }),
