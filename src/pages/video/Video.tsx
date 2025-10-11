@@ -77,12 +77,12 @@ export default function WatchPage() {
           </div>
           {/* Action Buttons */}
           <div className="flex gap-4">
-            <Button
+            { videoDetails?.isOwner && <Button
               variant="secondary"
               onClick={() => navigate(`/edit/${videoid}`)}
               className="gap-2">
               <Pencil /> Edit
-            </Button>
+            </Button>}
             <ToggleGroup
               type="single"
               variant={"outline"}

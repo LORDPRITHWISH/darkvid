@@ -14,7 +14,7 @@ type UserState = {
 
 export const useUserStore = create<UserState>()(
   devtools(
-    persist(
+  persist(
       (set) => ({
         userId: null,
         profilePhoto: null,
@@ -22,12 +22,15 @@ export const useUserStore = create<UserState>()(
         email: null,
         name: null,
 
-        setUser: (userId, name, profilePhoto, email) => set({ userId, name, profilePhoto,  email }),
+        setUser: (userId, name, profilePhoto, email) => set({ userId, name, profilePhoto, email }),
         logout: () => set({ userId: null, name: null, profilePhoto: null, email: null }),
       }),
       {
-        name: "user-store", // localStorage key
+        name: "user-store", // devtools name
       }
-    )
+    ),
+    {
+      name: "user-store", // localStorage key
+    }
   )
 );

@@ -1,19 +1,13 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Lock, Globe } from "lucide-react";
 import { getStudioVideo } from "@/services/studio.service";
+import { useNavigate } from "react-router";
 
-// Mock Data similar to YouTube Studio
-// const videoData = [
-//   { id: 1, title: "2025 07 21 05 14 25", duration: "0:58", visibility: "Private", date: "10 Aug 2025", views: 0, comments: 0, likes: "-" },
-//   { id: 2, title: "2025 07 21 05 20 33", duration: "3:45", visibility: "Private", date: "7 Aug 2025", views: 0, comments: 0, likes: "-" },
-//   { id: 3, title: "Next.js Crash Course", duration: "10:41:21", visibility: "Private", date: "3 Aug 2025", views: 0, comments: 0, likes: "-" },
-//   { id: 4, title: "Welcome to Tryhard", duration: "2:59", visibility: "Public", date: "20 Apr 2025", views: 9, comments: 0, likes: "-" },
-//   { id: 5, title: "videolar 2*2", duration: "1:14", visibility: "Public", date: "8 Nov 2024", views: 3, comments: 0, likes: "100% (1 like)" },
-// ];
+
 
 export default function StudioPage() {
   const [search, setSearch] = useState("");
@@ -27,6 +21,8 @@ export default function StudioPage() {
     }
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Fetch videos from API if needed
     fetchVideos();
@@ -34,9 +30,7 @@ export default function StudioPage() {
 
   console.log(videos);
 
-  const filteredVideos = videos.filter((video) =>
-    video.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredVideos = videos.filter((video) => video.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6 space-y-6">
@@ -90,7 +84,11 @@ export default function StudioPage() {
                   <TableCell className="text-slate-400">{video.views}</TableCell>
                   <TableCell className="text-slate-400">{video.comments}</TableCell>
                   <TableCell className="text-slate-400">{video.likes}</TableCell>
-                  <TableCell className="text-slate-400">{video.videoId}</TableCell>
+                  <TableCell className="text-slate-400">
+                    <Button variant="link" className="text-slate-400 bg-slate-800" onClick={() => navigate(`/edit/${video.videoId}`)}>
+                      Edit
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

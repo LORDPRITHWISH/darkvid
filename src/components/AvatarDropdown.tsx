@@ -5,9 +5,9 @@ import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router";
 
 export function AvatarDropdown() {
-      const {profilePhoto, name, email} = useUserStore((s) => s);
+  const { profilePhoto, name, email, logout } = useUserStore((s) => s);
 
-      const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <DropdownMenu>
@@ -64,7 +64,12 @@ export function AvatarDropdown() {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem className="text-red-600 focus:text-red-600">
+          <DropdownMenuItem
+            className="text-red-600 focus:text-red-600"
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}>
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
             {/* <kbd className="ml-auto text-xs text-muted-foreground">⇧⌘Q</kbd> */}

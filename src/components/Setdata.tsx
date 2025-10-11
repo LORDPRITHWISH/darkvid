@@ -30,9 +30,10 @@ export default function Setdata() {
           }
         }
 
-        if (isMounted) {
+        if (isMounted && refreshedResponse?.code === 401 ) {
           // setUser("", "");
           logout();
+          console.log("Token refresh failed or user data fetch failed. Redirecting to login.");
           navigate("/login");
         }
       } catch (error) {
