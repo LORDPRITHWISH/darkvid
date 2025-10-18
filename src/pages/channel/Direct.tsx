@@ -6,7 +6,7 @@ export default function Direct() {
 
     
       if (!userId) return <Navigate to="/login" replace />; 
-      return <Navigate to={`/chanel/${userId}`} replace />;
+      return <Navigate to={`/Channel/${userId}`} replace />;
 
   // return (
     // <div>Direct to {userId}</div>

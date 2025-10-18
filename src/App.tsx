@@ -1,35 +1,66 @@
-import { useTester } from "./store/testStore"
+// import { StrictMode } from "react";
+import "./index.css";
+import { createBrowserRouter, createRoutesFromElements, Navigate, Outlet, Route, RouterProvider } from "react-router";
+import Layout from "./Layout.js";
+import Home from "./pages/home/Home.js";
+import Profile from "./pages/profile/Profile.js";
+import Notfound from "./pages/NotFound.js";
+import Login from "./pages/login/Login.js";
+import Channel from "./pages/channel/Channel.js";
+import About from "./pages/about/About.js";
+import Direct from "./pages/channel/Direct.js";
+import Video from "./pages/video/Video.js";
+import Upload from "./pages/upload/UploadDetailsEditor.js";
+import HomeLayout from "./components/HomeLayout.js";
+import StudioPage from "./pages/studio/Studio.js";
+import UploadVideoPage from "./pages/upload/VideoUpload.js";
+import VideoDetailsEditor from "./pages/edit/VideoDetailsEditor.js";
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Layout />}>
+      <Route path="login" element={<Login />} />
+      <Route element={<HomeLayout />}>
+        <Route index element={<Home />} />
+        {/* <Route path="app" element={<App />} /> */}
+      </Route>
+      <Route path="about" element={<About />} />
 
-function App() {
-  const { count, increment, decrement, reset } = useTester();
-  console.log("Count:", count);
-  return (
-    <div className="app-container" style={{ textAlign: "center", padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      <h1 style={{ fontSize: "2rem", color: "#333" }}>Counter: {count}</h1>
-      <div style={{ marginTop: "20px" }}>
-      <button 
-        onClick={increment} 
-        style={{ margin: "5px", padding: "10px 20px", fontSize: "1rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-      >
-        Increment
-      </button>
-      <button 
-        onClick={decrement} 
-        style={{ margin: "5px", padding: "10px 20px", fontSize: "1rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-      >
-        Decrement
-      </button>
-      <button 
-        onClick={reset} 
-        style={{ margin: "5px", padding: "10px 20px", fontSize: "1rem", backgroundColor: "#2196F3", color: "white", border: "none", borderRadius: "5px", cursor: "pointer" }}
-      >
-        Reset
-      </button>
-      </div>
-    </div>
+      <Route path="@:userid" element={<Profile />} />
+      <Route path="channel/" element={<Outlet />}>
+        {/* <Route index element={<Navigate to="/" replace />} /> */}
+        <Route index element={<Direct />} />
+        <Route path=":userid" element={<Channel />} />
+      </Route>
+      <Route path="video/" element={<Outlet />}>
+        <Route index element={<Navigate to="/" replace />} />
+        <Route path=":videoid" element={<Video />} />
+      </Route>
+      <Route path="edit/" element={<Outlet />}>
+        <Route index element={<Navigate to="/studio" replace />} />
+        <Route path=":videoid" element={<VideoDetailsEditor />} />
+      </Route>
+      <Route path="tweet/" element={<Profile />}>
+        <Route path=":userid" element={<Profile />} />
+      </Route>
+      <Route path="upload/" element={<Outlet />}>
+        <Route index element={<UploadVideoPage />} />
+        <Route path=":videoid" element={<Upload />} />
+      </Route>
+      <Route path="studio/" element={<StudioPage />} />
+      <Route path="settings/" element={<Profile />} />
+      <Route path="subsciption/" element={<Profile />} />
+      <Route path="chat/" element={<Profile />}>
+        <Route path=":userid" element={<Profile />} />
+      </Route>
+
+      <Route path="*" element={<Notfound />} />
+    </Route>
   )
-}
+);
 
-export default App
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
+export default App;

@@ -1,13 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getVideo } from "@/services/home.service";
-import type { Video } from "@/types/video.types";
+import type { VideoPreview } from "@/types/video.types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import moment from "moment";
 
 export default function HomePage() {
   // console.log(getVideo());
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [videos, setVideos] = useState<VideoPreview[]>([]);
   useEffect(() => {
     getVideo()
       .then((res) => {

@@ -1,17 +1,14 @@
 import React, { useEffect } from "react";
-import {
-  ThumbsUp,
-  ThumbsDown,
-  Share2,
-  Pencil,
-  // Bold,
-  // Italic,
-  // Underline,
-} from "lucide-react";
+import { Share2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useNavigate, useParams } from "react-router";
-import { getVideo } from "@/services/video.service";
+import { getVideo, toggleVideoLike } from "@/services/video.service";
+import type { VideoDetails } from "@/types/video.types";
+
+import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { subscribeToChannel } from "@/services/user.service";
+
 // import { GrEdit } from "react-icons/gr";
 
 // import channelPic from "@/assets/channel.jpg";
@@ -19,7 +16,7 @@ import { getVideo } from "@/services/video.service";
 
 export default function WatchPage() {
   const { videoid } = useParams();
-  const [videoDetails, setVideoDetails] = React.useState(null);
+  const [videoDetails, setVideoDetails] = React.useState<VideoDetails | null>(null);
 
   useEffect(() => {
     // Fetch video details using videoid
@@ -32,6 +29,53 @@ export default function WatchPage() {
 
     fetchVideoDetails();
   }, [videoid]);
+
+  const toggle = async (mode: "like" | "dislike" | "") => {
+    if (!videoDetails) return;
+
+    const response = await toggleVideoLike(videoDetails?._id, mode);
+    // Optionally, refresh video details to reflect the new like/dislike status
+    // setVideoDetails(response?.);
+    if (response && response.success && videoDetails) {
+      console.log("the video was", videoDetails.LikeMode, " now ", mode);
+      const newDetails = { ...videoDetails };
+      newDetails.LikeMode = mode;
+      console.log("the video now was", videoDetails.LikeMode, " now ", mode);
+      if (mode === "like") {
+        newDetails.likes += 1;
+        if (videoDetails.LikeMode === "dislike") {
+          newDetails.dislikes -= 1;
+        }
+      } else if (mode === "dislike") {
+        newDetails.dislikes += 1;
+        if (videoDetails.LikeMode === "like") {
+          newDetails.likes -= 1;
+        }
+      } else {
+        // mode is ""
+        console.log("nutral from", videoDetails.LikeMode);
+        if (videoDetails.LikeMode === "like") {
+          newDetails.likes -= 1;
+        } else if (videoDetails.LikeMode === "dislike") {
+          newDetails.dislikes -= 1;
+        }
+      }
+
+      // console.log(newDetails)
+
+      setVideoDetails({ ...newDetails });
+      // setVideoDetails(response.);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    if (!videoDetails) return;
+
+    const response = await subscribeToChannel(videoDetails?.ownerDetails._id);
+    if (response && response.success) {
+      setVideoDetails({ ...videoDetails, isSubscribed: !videoDetails.isSubscribed });
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -52,56 +96,67 @@ export default function WatchPage() {
 
         {/* Title & Meta */}
         <div className="mt-2">
-          <h1 className="text-2xl font-semibold">
-            {videoDetails?.title || "Corrupting title..."}
-          </h1>
+          <h1 className="text-2xl font-semibold">{videoDetails?.title || "Corrupting title..."}</h1>
         </div>
 
         <div className="flex justify-between items-center mt-6 mx-4">
           {/* Channel */}
           <div className="flex items-center gap-4">
-            <img
-              src={videoDetails?.ownerDetails.profilepic || "/profile.jpg"}
-              alt="channel"
-              className="w-12 h-12 rounded-full"
-            />
-            <div>
-              <p className="font-medium">
-                {videoDetails?.ownerDetails.username}
-              </p>
-              <p className="text-sm text-gray-400">153K subscribers</p>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => {
+                void navigate(`/channel/${videoDetails?.ownerDetails.username}`);
+              }}>
+              <img src={videoDetails?.ownerDetails.profilepic || "/profile.jpg"} alt="channel" className="w-12 h-12 rounded-full" />
+              <div>
+                <p className="font-medium">{videoDetails?.ownerDetails.username}</p>
+                <p className="text-sm text-gray-400">153K subscribers</p>
+              </div>
             </div>
-            <Button className="bg-red-600 hover:bg-red-700 text-white">
-              Subscribe
-            </Button>
+            {!videoDetails?.isOwner && (
+              <Button className={videoDetails?.isSubscribed ? "bg-gray-600/20 hover:bg-gray-800 text-white" : "bg-red-600 hover:bg-red-700 text-white"} onClick={handleSubscribe}>
+                {videoDetails?.isSubscribed ? "Unsubscribe" : "Subscribe"}
+              </Button>
+            )}
           </div>
           {/* Action Buttons */}
           <div className="flex gap-4">
-            { videoDetails?.isOwner && <Button
-              variant="secondary"
-              onClick={() => navigate(`/edit/${videoid}`)}
-              className="gap-2">
-              <Pencil /> Edit
-            </Button>}
+            {videoDetails?.isOwner && (
+              <Button variant="secondary" onClick={() => navigate(`/edit/${videoid}`)} className="gap-2">
+                <Pencil /> Edit
+              </Button>
+            )}
             <ToggleGroup
               type="single"
-              variant={"outline"}
-              className=" border-0 ">
+              onValueChange={(value: "like" | "dislike" | "") => toggle(value)}
+              value={videoDetails?.LikeMode || ""}
+              variant="outline"
+              size="lg"
+              className="border-0">
               <ToggleGroupItem
-                value="bold"
-                className=" border "
-                aria-label="Toggle bold">
-                <ThumbsUp /> 24K
+                value="like"
+                aria-label="Toggle Like"
+                className="
+                  border transition-colors w-20
+                  hover:bg-green-100 hover:text-green-700
+                  data-[state=on]:bg-green-600 data-[state=on]:text-white                ">
+                {videoDetails?.LikeMode === "like" ? <BiSolidLike className=" !text-lg !w-5 !h-5 " /> : <BiLike className=" !text-lg !w-5 !h-5 " />} {videoDetails?.likes || 0}
               </ToggleGroupItem>
+
               <ToggleGroupItem
-                value="italic"
-                className=" border "
-                aria-label="Toggle italic">
-                <ThumbsDown /> 320
+                value="dislike"
+                aria-label="Toggle Dislike"
+                className="
+      border transition-colors w-20
+      hover:bg-red-100 hover:text-red-700
+      data-[state=on]:bg-red-600 data-[state=on]:text-white
+    ">
+                {videoDetails?.LikeMode === "dislike" ? <BiSolidDislike className=" !text-lg !w-5 !h-5 " /> : <BiDislike className=" !text-lg !w-6 !h-6 " />}{" "}
+                {videoDetails?.dislikes || 0}
               </ToggleGroupItem>
             </ToggleGroup>
-            <Button
-              className="gap-2">
+
+            <Button className="gap-2">
               <Share2 /> Share
             </Button>
           </div>
@@ -111,9 +166,7 @@ export default function WatchPage() {
         <div className="mt-4 space-y-1 bg-gray-400/10 py-4 px-8 rounded-3xl">
           <p className=" text-gray-400">1.7M views • 1 month ago</p>
 
-          <p className=" text-gray-300">
-            {videoDetails?.description || "No description available."}
-          </p>
+          <p className=" text-gray-300">{videoDetails?.description || "No description available."}</p>
           {/* <p className=" text-gray-300">
             #darkvid #darkhacks #coding #programming #react #nodejs #webdevelopment
           </p> */}
@@ -124,19 +177,11 @@ export default function WatchPage() {
           <h2 className="text-lg font-semibold mb-4">Comments (89)</h2>
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="flex gap-3">
-                <img
-                  src={"/thumb.jpg"}
-                  alt="user"
-                  className="w-10 h-10 rounded-full"
-                />
+              <div key={i} className="flex gap-3">
+                <img src={"/thumb.jpg"} alt="user" className="w-10 h-10 rounded-full" />
                 <div>
                   <p className="font-medium text-sm">CyberUser_{i}</p>
-                  <p className="text-sm text-gray-300">
-                    🔥 This episode is next level. Respect to DarkLord!
-                  </p>
+                  <p className="text-sm text-gray-300">🔥 This episode is next level. Respect to DarkLord!</p>
                 </div>
               </div>
             ))}
@@ -149,14 +194,10 @@ export default function WatchPage() {
         <h2 className="text-lg font-semibold mb-4">Recommended</h2>
         <div className="space-y-4">
           {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex gap-3">
+            <div key={i} className="flex gap-3">
               <div className="w-32 h-20 bg-gray-700 rounded" />
               <div className="flex-1">
-                <p className="text-sm font-semibold leading-snug">
-                  Hack the Web #{i + 1}
-                </p>
+                <p className="text-sm font-semibold leading-snug">Hack the Web #{i + 1}</p>
                 <p className="text-xs text-gray-400">DarkHacks • 120K views</p>
               </div>
             </div>

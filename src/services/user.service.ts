@@ -1,6 +1,7 @@
 // import { apiRequest } from "@/lib/apiRequest";
 
 import { apiRequest } from "@/api/apiClient";
+import type { SubscribeResponse } from "@/types/api.types";
 
 export const getUserChannel = (userid: string) => {
   const responce = apiRequest<{ data: any }>({
@@ -21,5 +22,12 @@ export const refreshToken = () => {
   return apiRequest<{ data: any }>({
     method: "POST",
     url: `/users/refresh_token`,
+  });
+}
+
+export const subscribeToChannel = (channelId: string) => {
+  return apiRequest< SubscribeResponse >({
+    method: "PUT",
+    url: `/sub/c/${channelId}`,
   });
 }

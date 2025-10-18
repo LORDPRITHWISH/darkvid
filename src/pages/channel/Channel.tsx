@@ -14,13 +14,13 @@ type ChannelData = {
   isSubscribed: boolean;
 };
 
-function Chanel() {
+function Channel() {
   const { userid } = useParams<{ userid: string }>();
   const [channel, setChannel] = useState<ChannelData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  console.log("Chanel component mounted with userid:", userid);
+  console.log("Channel component mounted with userid:", userid);
 
   useEffect(() => {
     if (!userid) return;
@@ -94,4 +94,4 @@ function Chanel() {
   );
 }
 
-export default Chanel;
+export default Channel;

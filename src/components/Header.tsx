@@ -1,15 +1,15 @@
 // import React from "react";
 import { NavLink, useNavigate, useLocation } from "react-router";
-import { useUserStore } from "../store/userStore";
+// import { useUserStore } from "../store/userStore";
 import { useSidebarState } from "@/store/sideStore";
 import { Menu, Search, Upload } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { AvatarDropdown } from "./AvatarDropdown";
 
 const Header = () => {
   // const userId = useUserStore((s) => s.userId);
-  const profilePhoto = useUserStore((s) => s.profilePhoto);
+  // const profilePhoto = useUserStore((s) => s.profilePhoto);
   const { toggle } = useSidebarState();
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,24 +38,6 @@ const Header = () => {
             upload
           </button>
         )}
-        {/* <NavLink to="/chanel" className="mr-4">
-        <Avatar>
-          <AvatarImage src={profilePhoto || "/profilepic.png"} />
-          <AvatarFallback>DV</AvatarFallback>
-        </Avatar>
-        </NavLink> */}
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
         <AvatarDropdown />
       </div>
     </div>

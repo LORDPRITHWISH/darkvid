@@ -33,7 +33,7 @@ export function AvatarDropdown() {
 
         {/* Menu items */}
         <div className="p-1">
-          <DropdownMenuItem onClick={() => navigate("/chanel")}>
+          <DropdownMenuItem onClick={() => navigate("/channel")}>
             <User className="mr-2 h-4 w-4" />
             <span>View profile</span>
             {/* <kbd className="ml-auto text-xs text-muted-foreground">⌘K ⌘P</kbd> */}
