@@ -16,18 +16,18 @@ export const getProfile = () => {
     method: "GET",
     url: `/users/profile`,
   });
-}
+};
 
 export const refreshToken = () => {
   return apiRequest<{ data: any }>({
     method: "POST",
     url: `/users/refresh_token`,
   });
-}
+};
 
 export const subscribeToChannel = (channelId: string) => {
-  return apiRequest< SubscribeResponse >({
+  return apiRequest<SubscribeResponse>({
     method: "PUT",
     url: `/sub/c/${channelId}`,
   });
-}
+};

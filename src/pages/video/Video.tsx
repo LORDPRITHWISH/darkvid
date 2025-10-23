@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
-import { Share2, Pencil } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Share2, Pencil, Reply, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useNavigate, useParams } from "react-router";
 import { getVideo, toggleVideoLike } from "@/services/video.service";
 import type { VideoDetails } from "@/types/video.types";
 
-import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { BiDislike, BiLike, BiMessageSquare, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { subscribeToChannel } from "@/services/user.service";
+import { CommentCreation } from "@/components/video/CommentCreation";
+import { getVideoComments } from "@/services/comment.service";
+import type { Comments } from "@/types/comment.types";
+import moment from "moment";
 
 // import { GrEdit } from "react-icons/gr";
 
@@ -16,7 +20,8 @@ import { subscribeToChannel } from "@/services/user.service";
 
 export default function WatchPage() {
   const { videoid } = useParams();
-  const [videoDetails, setVideoDetails] = React.useState<VideoDetails | null>(null);
+  const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
+  const [userComments, setUserComments] = useState<Comments[]>([]);
 
   useEffect(() => {
     // Fetch video details using videoid
@@ -29,6 +34,19 @@ export default function WatchPage() {
 
     fetchVideoDetails();
   }, [videoid]);
+
+  useEffect(() => {
+    if (!videoDetails) return;
+    console.log("Loaded video details:", videoDetails);
+    // Fetch video comments
+    const fetchVideoComments = async () => {
+      if (!videoDetails._id) return;
+      const response = await getVideoComments(videoDetails._id); // Fetch video comments
+      setUserComments(response?.data || []);
+    };
+
+    fetchVideoComments();
+  }, [videoDetails, videoid]);
 
   const toggle = async (mode: "like" | "dislike" | "") => {
     if (!videoDetails) return;
@@ -79,6 +97,12 @@ export default function WatchPage() {
 
   const navigate = useNavigate();
 
+  if (!videoid) {
+    return <div>Video ID not found.</div>;
+  }
+
+  console.log("The Comments : ", userComments);
+
   return (
     <div className="w-screen min-h-screen text-white flex ml-10 ">
       {/* LEFT: Main content */}
@@ -88,15 +112,14 @@ export default function WatchPage() {
           <video
             className="w-full h-full"
             controls
-            autoPlay
-            // src="/videos/sample.mp4"
+            // autoPlay
             src={videoDetails?.playbackUrl}
           />
         </div>
 
         {/* Title & Meta */}
         <div className="mt-2">
-          <h1 className="text-2xl font-semibold">{videoDetails?.title || "Corrupting title..."}</h1>
+          <h1 className="text-2xl font-semibold">{videoDetails?.title || "Corrupted dark title..."}</h1>
         </div>
 
         <div className="flex justify-between items-center mt-6 mx-4">
@@ -139,7 +162,8 @@ export default function WatchPage() {
                 className="
                   border transition-colors w-20
                   hover:bg-green-100 hover:text-green-700
-                  data-[state=on]:bg-green-600 data-[state=on]:text-white                ">
+                  data-[state=on]:bg-green-600 data-[state=on]:text-white                
+                  ">
                 {videoDetails?.LikeMode === "like" ? <BiSolidLike className=" !text-lg !w-5 !h-5 " /> : <BiLike className=" !text-lg !w-5 !h-5 " />} {videoDetails?.likes || 0}
               </ToggleGroupItem>
 
@@ -147,10 +171,10 @@ export default function WatchPage() {
                 value="dislike"
                 aria-label="Toggle Dislike"
                 className="
-      border transition-colors w-20
-      hover:bg-red-100 hover:text-red-700
-      data-[state=on]:bg-red-600 data-[state=on]:text-white
-    ">
+                  border transition-colors w-20
+                  hover:bg-red-100 hover:text-red-700
+                  data-[state=on]:bg-red-600 data-[state=on]:text-white
+                ">
                 {videoDetails?.LikeMode === "dislike" ? <BiSolidDislike className=" !text-lg !w-5 !h-5 " /> : <BiDislike className=" !text-lg !w-6 !h-6 " />}{" "}
                 {videoDetails?.dislikes || 0}
               </ToggleGroupItem>
@@ -167,21 +191,30 @@ export default function WatchPage() {
           <p className=" text-gray-400">1.7M views • 1 month ago</p>
 
           <p className=" text-gray-300">{videoDetails?.description || "No description available."}</p>
-          {/* <p className=" text-gray-300">
-            #darkvid #darkhacks #coding #programming #react #nodejs #webdevelopment
-          </p> */}
         </div>
 
         {/* Comments */}
         <div className="mt-8">
           <h2 className="text-lg font-semibold mb-4">Comments (89)</h2>
           <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
+            {videoDetails?._id && <CommentCreation videoId={videoDetails?._id} />}
+            {userComments.map((comment, i) => (
               <div key={i} className="flex gap-3">
-                <img src={"/thumb.jpg"} alt="user" className="w-10 h-10 rounded-full" />
+                <img src={comment.user.profilepic ?? "/profile.jpg"} alt="user" className="w-10 h-10 rounded-full" />
                 <div>
-                  <p className="font-medium text-sm">CyberUser_{i}</p>
-                  <p className="text-sm text-gray-300">🔥 This episode is next level. Respect to DarkLord!</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-sm">{comment.user.username}</p>•<p className="text-xs text-gray-500">{moment(comment.createdAt).fromNow()}</p>
+                  </div>
+                  <p className="text-sm text-gray-300">{comment.content}</p>
+                  <div className="flex items-center gap-4 mt-2 text-gray-500">
+                    <button className="hover:text-white transition-colors flex items-center gap-1">
+                      <BiLike /> {comment.likes}
+                    </button>
+                    <button className="hover:text-white transition-colors flex items-center gap-1">
+                      <Reply /> reply
+                    </button>
+                  </div>
+                  <Button variant="link" className="px-0 mt-2 text-sm text-blue-400"><ChevronDown />View {comment.replyCount} replies</Button>
                 </div>
               </div>
             ))}
@@ -195,7 +228,8 @@ export default function WatchPage() {
         <div className="space-y-4">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="flex gap-3">
-              <div className="w-32 h-20 bg-gray-700 rounded" />
+              {/* <div className="w-32 h-20 bg-gray-700 rounded" /> */}
+              <img src={"/thumb.jpg"} alt="video thumbnail" className="w-32 h-20 rounded-lg object-cover" />
               <div className="flex-1">
                 <p className="text-sm font-semibold leading-snug">Hack the Web #{i + 1}</p>
                 <p className="text-xs text-gray-400">DarkHacks • 120K views</p>

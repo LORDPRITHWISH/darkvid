@@ -30,7 +30,7 @@ export default function StudioPage() {
 
   console.log(videos);
 
-  const filteredVideos = videos.filter((video) => video.title.toLowerCase().includes(search.toLowerCase()));
+  const filteredVideos = videos.filter((video) => video.title?.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6 space-y-6">
