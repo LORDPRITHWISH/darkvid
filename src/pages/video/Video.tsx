@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Share2, Pencil, Reply, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -6,17 +6,12 @@ import { useNavigate, useParams } from "react-router";
 import { getVideo, toggleVideoLike } from "@/services/video.service";
 import type { VideoDetails } from "@/types/video.types";
 
-import { BiDislike, BiLike, BiMessageSquare, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import { subscribeToChannel } from "@/services/user.service";
 import { CommentCreation } from "@/components/video/CommentCreation";
 import { getVideoComments } from "@/services/comment.service";
 import type { Comments } from "@/types/comment.types";
 import moment from "moment";
-
-// import { GrEdit } from "react-icons/gr";
-
-// import channelPic from "@/assets/channel.jpg";
-// import userPic from "@/assets/user.jpg";
 
 export default function WatchPage() {
   const { videoid } = useParams();
@@ -34,16 +29,17 @@ export default function WatchPage() {
 
     fetchVideoDetails();
   }, [videoid]);
+  
 
-  useEffect(() => {
+  const fetchVideoComments = async () => {
     if (!videoDetails) return;
     console.log("Loaded video details:", videoDetails);
-    // Fetch video comments
-    const fetchVideoComments = async () => {
-      if (!videoDetails._id) return;
-      const response = await getVideoComments(videoDetails._id); // Fetch video comments
-      setUserComments(response?.data || []);
-    };
+    if (!videoDetails._id) return;
+    const response = await getVideoComments(videoDetails._id); // Fetch video comments
+    setUserComments(response?.data || []);
+  };
+
+  useEffect(() => {
 
     fetchVideoComments();
   }, [videoDetails, videoid]);
@@ -91,7 +87,19 @@ export default function WatchPage() {
 
     const response = await subscribeToChannel(videoDetails?.ownerDetails._id);
     if (response && response.success) {
-      setVideoDetails({ ...videoDetails, isSubscribed: !videoDetails.isSubscribed });
+      setVideoDetails((prev) => {
+        if (!prev) return prev;
+        const wasSubscribed = prev.isSubscribed;
+        const updatedOwnerDetails = {
+          ...prev.ownerDetails,
+          subscriberCount: (prev.ownerDetails?.subscriberCount || 0) + (wasSubscribed ? -1 : 1),
+        };
+        return {
+          ...prev,
+          isSubscribed: !wasSubscribed,
+          ownerDetails: updatedOwnerDetails,
+        };
+      });
     }
   };
 
@@ -133,7 +141,7 @@ export default function WatchPage() {
               <img src={videoDetails?.ownerDetails.profilepic || "/profile.jpg"} alt="channel" className="w-12 h-12 rounded-full" />
               <div>
                 <p className="font-medium">{videoDetails?.ownerDetails.username}</p>
-                <p className="text-sm text-gray-400">153K subscribers</p>
+                <p className="text-sm text-gray-400">{videoDetails?.ownerDetails.subscriberCount || 0} subscribers</p>
               </div>
             </div>
             {!videoDetails?.isOwner && (
@@ -188,16 +196,16 @@ export default function WatchPage() {
 
         {/* Description */}
         <div className="mt-4 space-y-1 bg-gray-400/10 py-4 px-8 rounded-3xl">
-          <p className=" text-gray-400">1.7M views • 1 month ago</p>
+          <p className=" text-gray-400">{videoDetails?.views || 0} views • {moment(videoDetails?.createdAt).fromNow()}</p>
 
           <p className=" text-gray-300">{videoDetails?.description || "No description available."}</p>
         </div>
 
         {/* Comments */}
         <div className="mt-8">
-          <h2 className="text-lg font-semibold mb-4">Comments (89)</h2>
+          <h2 className="text-lg font-semibold mb-4">Comments ( {userComments.length} )</h2>
           <div className="space-y-4">
-            {videoDetails?._id && <CommentCreation videoId={videoDetails?._id} />}
+            {videoDetails?._id && <CommentCreation videoId={videoDetails?._id} fetchComments={fetchVideoComments} />}
             {userComments.map((comment, i) => (
               <div key={i} className="flex gap-3">
                 <img src={comment.user.profilepic ?? "/profile.jpg"} alt="user" className="w-10 h-10 rounded-full" />

@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,6 @@ import { useNavigate } from "react-router";
 
 export default function StudioPage() {
   const [search, setSearch] = useState("");
-  // const [videos, setVideos] = useState(videoData);
   const [videos, setVideos] = useState([]);
 
   const fetchVideos = async () => {

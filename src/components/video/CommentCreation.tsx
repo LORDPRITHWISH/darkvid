@@ -9,9 +9,10 @@ import { addVideoComment } from "@/services/comment.service";
 interface CommentProps {
     videoId: string;
     onClose?: () => void;
+    fetchComments?: () => void;
 }
 
-export function CommentCreation({ videoId, onClose }: CommentProps) {
+export function CommentCreation({ videoId, onClose, fetchComments }: CommentProps) {
   const { profilePhoto } = useUserStore();
 
   const [comment, setComment] = useState("");
@@ -33,10 +34,11 @@ export function CommentCreation({ videoId, onClose }: CommentProps) {
     // console.log(e.target.value);
     setComment(e.target.value);
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addVideoComment(videoId, comment);
-    console.log("submitted");
+    const res = await addVideoComment(videoId, comment);
+    fetchComments?.();
+    console.log("submitted", res);
   };
   return (
     <div className="w-full flex gap-4 justify-center  items-center px-6">
