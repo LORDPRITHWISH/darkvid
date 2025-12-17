@@ -1,5 +1,6 @@
 import { apiRequest } from "@/api/apiClient";
 import axios from "axios";
+import { r } from "node_modules/react-router/dist/development/lib-B33EY9A0.d.mts";
 // import axios from "axios";
 
 export const initiateUpload = () => {
@@ -10,11 +11,7 @@ export const initiateUpload = () => {
   return responce;
 };
 
-export const getUploadURL = (
-  uploadId: string,
-  partNumber: number,
-  videoId: string
-) => {
+export const getUploadURL = (uploadId: string, partNumber: number, videoId: string) => {
   const responce = apiRequest<{ data: any }>({
     method: "POST",
     url: `/video/upload/getsignlink`,
@@ -23,19 +20,42 @@ export const getUploadURL = (
   return responce;
 };
 
-export const uploadChunk = (signedUrl: string, chunk: Blob) => {
-  console.log("the  Chunk is ", chunk.size);
-  return axios(signedUrl, {
+// export const uploadChunk = (signedUrl: string, chunk: Blob) => {
+//   console.log("the  Chunk is ", chunk.size);
+//   return axios(signedUrl, {
+//     method: "PUT",
+//     data: chunk,
+//     headers: {
+//       "Content-Length": chunk.size.toString(),
+//     },
+//   });
+// };
+
+export const uploadChunk = async (signedUrl: string, chunk: Blob) => {
+  console.log("Chunk size:", chunk.size);
+
+  const res = await fetch(signedUrl, {
     method: "PUT",
-    data: chunk,
+    body: chunk,
+    headers: {
+      "Content-Length": chunk.size.toString(),
+      "Content-Type": "application/octet-stream",
+    },
   });
+
+  // if (!res.ok) {
+  //   throw new Error(`Upload failed: ${res.status}`);
+  // }
+
+  // const etag = res.headers.get("etag");
+  // if (!etag) throw new Error("Missing ETag");
+
+  // return etag.replaceAll('"', "");
+  return res;
 };
 
-export const completeUpload = (
-  videoId: string,
-  uploadId: string,
-  parts: { ETag: string; PartNumber: number }[]
-) => {
+
+export const completeUpload = (videoId: string, uploadId: string, parts: { ETag: string; PartNumber: number }[]) => {
   const responce = apiRequest<{ data: any }>({
     method: "POST",
     url: `/video/upload/complete`,
@@ -59,4 +79,4 @@ export const setVideoData = (videoId: string, details: any) => {
     data: details,
   });
   return responce;
-}
+};
