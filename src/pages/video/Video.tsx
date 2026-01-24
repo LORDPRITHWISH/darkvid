@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Share2, Pencil, Reply, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useNavigate, useParams } from "react-router";
-import { getVideo, toggleVideoLike } from "@/services/video.service";
+import { getVideo, startVideoWatch, endVideoWatch, toggleVideoLike } from "@/services/video.service";
 import type { VideoDetails } from "@/types/video.types";
 
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
@@ -12,11 +12,52 @@ import { CommentCreation } from "@/components/video/CommentCreation";
 import { getVideoComments } from "@/services/comment.service";
 import type { Comments } from "@/types/comment.types";
 import moment from "moment";
+import { useHeartBeatStore } from "@/store/heartBeatStore";
+import { getSessionKey } from "@/utils/session.util";
 
 export default function WatchPage() {
   const { videoid } = useParams();
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [userComments, setUserComments] = useState<Comments[]>([]);
+
+  const sessionKey = getSessionKey();
+
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  // const [lastPosition, setLastPosition] = useState(0);
+  const { initializeHeartBeat, updateLastPosition, startHeartBeat, stopHeartBeat } = useHeartBeatStore();
+
+  const startWatching = async () => {
+    if (!videoid) return;
+    const response = await startVideoWatch(videoid, sessionKey); // Notify backend about starting to watch
+    console.log("The Start Responce", response);
+    const startPosition = response?.data?.startPosition || 0;
+    // const startPosition = 100;
+    console.log("The Start position", startPosition);
+    if (videoRef.current) {
+      videoRef.current.currentTime = startPosition;
+      // videoRef.current.play().catch((err) => {
+      //   console.error("Auto-play was prevented:", err);
+      // });
+    }
+    initializeHeartBeat(videoid, sessionKey, startPosition);
+  };
+
+  useEffect(() => {
+    const handlePageHide = () => {
+      if (videoid) {
+        endVideoWatch(videoid, sessionKey, videoRef.current?.currentTime || 0);
+      }
+    };
+
+    window.addEventListener("pagehide", handlePageHide);
+
+    return () => {
+      window.removeEventListener("pagehide", handlePageHide);
+    };
+  }, []);
+
+
+  // const id
 
   useEffect(() => {
     // Fetch video details using videoid
@@ -28,8 +69,8 @@ export default function WatchPage() {
     };
 
     fetchVideoDetails();
+    startWatching();
   }, [videoid]);
-  
 
   const fetchVideoComments = async () => {
     if (!videoDetails) return;
@@ -40,7 +81,6 @@ export default function WatchPage() {
   };
 
   useEffect(() => {
-
     fetchVideoComments();
   }, [videoDetails, videoid]);
 
@@ -109,7 +149,7 @@ export default function WatchPage() {
     return <div>Video ID not found.</div>;
   }
 
-  console.log("The Comments : ", userComments);
+  // console.log("The Comments : ", userComments);
 
   return (
     <div className="w-screen min-h-screen text-white flex ml-10 ">
@@ -118,16 +158,35 @@ export default function WatchPage() {
         {/* Video */}
         <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
           <video
+            ref={videoRef}
             className="w-full h-full"
+            poster={videoDetails?.thumbnailUrl}
             controls
             // autoPlay
             src={videoDetails?.playbackUrl}
+            onTimeUpdate={(e) => {
+              updateLastPosition(e.currentTarget.currentTime);
+            }}
+            onPause={() => {
+              // const currentTime = e.currentTarget.currentTime;
+              // console.log("Paused at:", currentTime);
+              stopHeartBeat();
+              // fire API / save to DB / localStorage here
+            }}
+            onPlay={() => {
+              startHeartBeat();
+            }}
+            onEnded={(e)=>{
+              console.log("the end",e)
+            }}
           />
         </div>
 
         {/* Title & Meta */}
         <div className="mt-2">
-          <h1 className="text-2xl font-semibold">{videoDetails?.title || "Corrupted dark title..."}</h1>
+          <h1 className="text-2xl font-semibold">
+            {videoDetails?.title || "Corrupted dark title..."} {sessionKey}
+          </h1>
         </div>
 
         <div className="flex justify-between items-center mt-6 mx-4">
@@ -196,7 +255,9 @@ export default function WatchPage() {
 
         {/* Description */}
         <div className="mt-4 space-y-1 bg-gray-400/10 py-4 px-8 rounded-3xl">
-          <p className=" text-gray-400">{videoDetails?.views || 0} views • {moment(videoDetails?.createdAt).fromNow()}</p>
+          <p className=" text-gray-400">
+            {videoDetails?.views || 0} views • {moment(videoDetails?.createdAt).fromNow()}
+          </p>
 
           <p className=" text-gray-300">{videoDetails?.description || "No description available."}</p>
         </div>
@@ -222,7 +283,10 @@ export default function WatchPage() {
                       <Reply /> reply
                     </button>
                   </div>
-                  <Button variant="link" className="px-0 mt-2 text-sm text-blue-400"><ChevronDown />View {comment.replyCount} replies</Button>
+                  <Button variant="link" className="px-0 mt-2 text-sm text-blue-400">
+                    <ChevronDown />
+                    View {comment.replyCount} replies
+                  </Button>
                 </div>
               </div>
             ))}

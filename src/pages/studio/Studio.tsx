@@ -6,12 +6,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Download, Lock, Globe } from "lucide-react";
 import { getStudioVideo } from "@/services/studio.service";
 import { useNavigate } from "react-router";
+import type { StudioVideo } from "@/types/studio.types";
 
 
 
 export default function StudioPage() {
   const [search, setSearch] = useState("");
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState<StudioVideo[]>([]);
 
   const fetchVideos = async () => {
     const response = await getStudioVideo();
@@ -23,7 +24,6 @@ export default function StudioPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch videos from API if needed
     fetchVideos();
   }, []);
 
@@ -50,21 +50,24 @@ export default function StudioPage() {
                 <TableHead className="text-slate-300">Video</TableHead>
                 <TableHead className="text-slate-300">Visibility</TableHead>
                 <TableHead className="text-slate-300">Date</TableHead>
-                <TableHead className="text-slate-300">Views</TableHead>
+                <TableHead className="text-slate-300">Total Views</TableHead>
+                <TableHead className="text-slate-300">Unique Views</TableHead>
                 <TableHead className="text-slate-300">Comments</TableHead>
                 <TableHead className="text-slate-300">Likes</TableHead>
-                <TableHead className="text-slate-300">Edit</TableHead>
+                <TableHead className="text-slate-300">Dislikes</TableHead>
+                <TableHead className="text-slate-300">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredVideos.map((video) => (
-                <TableRow key={video.id} className="border-slate-800">
+                <TableRow key={video._id} className="border-slate-800">
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="bg-slate-800 w-16 h-10 flex items-center justify-center text-xs rounded">{video.duration}</div>
+                      {/* <div className="bg-slate-800 w-16 h-10 flex items-center justify-center text-xs rounded">{video.duration}</div> */}
+                      <img src={video.thumbnailUrl || "/thumb.jpg"} alt="thumbnail" className="w-20 h-16 object-cover rounded" />
                       <div>
-                        <p className="font-medium text-white">{video.title}</p>
-                        <p className="text-xs text-slate-400">Add description</p>
+                        <p className="font-medium text-white text-xl">{video.title}</p>
+                        {/* <p className="text-xs text-slate-400">Add description</p> */}
                       </div>
                     </div>
                   </TableCell>
@@ -80,13 +83,20 @@ export default function StudioPage() {
                     )}
                   </TableCell>
                   <TableCell className="text-slate-400">{video.createdAt}</TableCell>
-                  <TableCell className="text-slate-400">{video.views}</TableCell>
-                  <TableCell className="text-slate-400">{video.comments}</TableCell>
+                  <TableCell className="text-slate-400">{video.totalViews}</TableCell>
+                  <TableCell className="text-slate-400">{video.uniqueViews}</TableCell>
+                  <TableCell className="text-slate-400">{video.commentCount}</TableCell>
                   <TableCell className="text-slate-400">{video.likes}</TableCell>
+                  <TableCell className="text-slate-400">{video.dislikes}</TableCell>
                   <TableCell className="text-slate-400">
+                    <div className="flex h-full items-center gap-2">
                     <Button variant="link" className="text-slate-400 bg-slate-800" onClick={() => navigate(`/edit/${video.videoId}`)}>
                       Edit
                     </Button>
+                    <Button variant="link" className="text-slate-400 bg-slate-800" onClick={() => navigate(`/video/${video.videoId}`)}>
+                      play
+                    </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

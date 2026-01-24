@@ -9,6 +9,33 @@ export const getVideo = (videoId: string) => {
   return response;
 };
 
+export const startVideoWatch = (videoId: string, sessionId: string) => {
+  const response = apiRequest<{ data: any }>({
+    method: "POST",
+    url: `/view/video/${videoId}/start`,
+    data: { sessionId },
+  });
+  return response;
+};
+
+export const endVideoWatch = (videoId: string, sessionId: string, lastPosition: number) => {
+  const response = apiRequest<{ data: any }>({
+    method: "POST",
+    url: `/view/video/${videoId}/end`,
+    data: { sessionId, lastPosition },
+  });
+  return response;
+};
+
+export const heartbeatVideoWatch = (videoId: string, sessionId: string, lastPosition: number) => {
+  const response = apiRequest<{ data: any }>({
+    method: "POST",
+    url: `/view/video/${videoId}/heartbeat`,
+    data: { sessionId, lastPosition },
+  });
+  return response;
+};
+
 export const getVideoDetails = (videoId: string) => {
   const response = apiRequest<{ data: any }>({
     method: "GET",
@@ -34,4 +61,4 @@ export const commentOnVideo = (videoId: string, commentText: string) => {
     data: { content: commentText },
   });
   return response;
-}
+};

@@ -106,8 +106,8 @@ export default function DetailsZone() {
   const Link = `${import.meta.env.VITE_Frontend_URL}/video/${videoid}`;
 
   useEffect(() => {
-    if (thumbnailFile && videoDetails) {
-      uploadThumbnail(thumbnailFile, videoDetails.videoId);
+    if (thumbnailFile && videoid) {
+      uploadThumbnail(thumbnailFile, videoid);
     }
   }, [thumbnailFile]);
 
