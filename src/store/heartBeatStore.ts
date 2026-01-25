@@ -1,4 +1,4 @@
-import { heartbeatVideoWatch, endVideoWatch } from "@/services/video.service";
+import { heartbeatVideoWatch, endVideoWatch, startVideoWatch } from "@/services/video.service";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -15,7 +15,10 @@ type HeartBeatState = {
   updateLastPosition: (position: number) => void;
 
   startHeartBeat: () => void;
+
   stopHeartBeat: () => void;
+
+  endHeartBeat: () => void;
 
   cleanPlayer: () => void;
 };
@@ -68,6 +71,11 @@ export const useHeartBeatStore = create<HeartBeatState>()(
             await heartbeatVideoWatch(videoId, sessionId, lastPosition);
           } catch (err) {
             console.error("Heartbeat failed:", err);
+
+            const error = err as { status?: number };
+            if (error.status === 400 || error.status === 410) {
+              startVideoWatch(videoId, sessionId);
+            }
           }
 
           console.log(`Heartbeat sent for video ${videoId} at position ${lastPosition}`);
@@ -80,6 +88,7 @@ export const useHeartBeatStore = create<HeartBeatState>()(
           heartbeatInterval = null;
         }
       },
+
       cleanPlayer: () => {
         const { videoId, sessionId, lastPosition } = get();
 

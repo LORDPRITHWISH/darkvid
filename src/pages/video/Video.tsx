@@ -206,9 +206,10 @@ export default function WatchPage() {
             onPlay={() => {
               startHeartBeat();
             }}
-            onEnded={(e) => {
-              console.log("the end", e);
-            }}
+            // onEnded={(e) => {
+            //   // console.log("the end", e);
+            //   stopHeartBeat(true);
+            // }}
           />
         </div>
 
