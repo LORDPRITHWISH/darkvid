@@ -3,7 +3,7 @@ import { Share2, Pencil, Reply, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useNavigate, useParams } from "react-router";
-import { getVideo, startVideoWatch, endVideoWatch, toggleVideoLike } from "@/services/video.service";
+import { getVideo, startVideoWatch, endVideoWatch, toggleVideoLike, getRelatedVideos } from "@/services/video.service";
 import type { VideoDetails } from "@/types/video.types";
 
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
@@ -14,13 +14,35 @@ import type { Comments } from "@/types/comment.types";
 import moment from "moment";
 import { useHeartBeatStore } from "@/store/heartBeatStore";
 import { getSessionKey } from "@/utils/session.util";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { MdOutlineContentCopy } from "react-icons/md";
+import { IoCheckmarkDoneSharp } from "react-icons/io5";
+// import { set } from "lodash";
 
 export default function WatchPage() {
   const { videoid } = useParams();
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [userComments, setUserComments] = useState<Comments[]>([]);
 
+  const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
+
+  const [wasStarted, setWasStarted] = useState(false);
+
   const sessionKey = getSessionKey();
+
+  const videoUrl = `${import.meta.env.VITE_Frontend_URL}/video/${videoid}`;
+
+  const shareVideo = async () => {
+    // Implement share functionality here
+    console.log("Share video:", videoUrl);
+    setWasStarted(true);
+    // window.navigator.clipboard.writeText(videoUrl);
+    await navigator.clipboard.writeText(videoUrl);
+
+    setTimeout(() => {
+      setWasStarted(false);
+    }, 2000);
+  };
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   // const [lastPosition, setLastPosition] = useState(0);
@@ -56,7 +78,6 @@ export default function WatchPage() {
     };
   }, []);
 
-
   // const id
 
   useEffect(() => {
@@ -66,9 +87,18 @@ export default function WatchPage() {
       const response = await getVideo(videoid || ""); // Fetch video details
 
       setVideoDetails(response?.data);
+      window.document.title = response?.data?.title || "DarkVid Playback";
+    };
+
+    const fetchRelatedVideos = async () => {
+      if (!videoid) return;
+      const response = await getRelatedVideos(videoid || ""); // Fetch related videos
+
+      setRelatedVideos(response?.data || []);
     };
 
     fetchVideoDetails();
+    fetchRelatedVideos();
     startWatching();
   }, [videoid]);
 
@@ -152,11 +182,11 @@ export default function WatchPage() {
   // console.log("The Comments : ", userComments);
 
   return (
-    <div className="w-screen min-h-screen text-white flex ml-10 ">
+    <div className="w-screen min-h-screen text-white ml-2 grid grid-cols-384 ">
       {/* LEFT: Main content */}
-      <div className="flex-1 p-4 max-w-[calc(100%-550px)]">
+      <div className="flex-1 px-4 col-span-293">
         {/* Video */}
-        <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
+        <div className="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden">
           <video
             ref={videoRef}
             className="w-full h-full"
@@ -176,20 +206,18 @@ export default function WatchPage() {
             onPlay={() => {
               startHeartBeat();
             }}
-            onEnded={(e)=>{
-              console.log("the end",e)
+            onEnded={(e) => {
+              console.log("the end", e);
             }}
           />
         </div>
 
         {/* Title & Meta */}
-        <div className="mt-2">
-          <h1 className="text-2xl font-semibold">
-            {videoDetails?.title || "Corrupted dark title..."} {sessionKey}
-          </h1>
+        <div className="mt-1">
+          <h1 className="text-xl font-semibold">{videoDetails?.title || "Corrupted dark title..."}</h1>
         </div>
 
-        <div className="flex justify-between items-center mt-6 mx-4">
+        <div className="flex justify-between items-center mt-2 ">
           {/* Channel */}
           <div className="flex items-center gap-4">
             <div
@@ -221,7 +249,7 @@ export default function WatchPage() {
               onValueChange={(value: "like" | "dislike" | "") => toggle(value)}
               value={videoDetails?.LikeMode || ""}
               variant="outline"
-              size="lg"
+              // size="lg"
               className="border-0">
               <ToggleGroupItem
                 value="like"
@@ -247,9 +275,49 @@ export default function WatchPage() {
               </ToggleGroupItem>
             </ToggleGroup>
 
-            <Button className="gap-2">
+            {/* <Button className="gap-2">
               <Share2 /> Share
-            </Button>
+            </Button> */}
+            <Dialog>
+              <DialogTrigger>
+                <Button className="gap-2">
+                  <Share2 /> Share
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Share</DialogTitle>
+                  <DialogDescription>Share this video with your friends</DialogDescription>
+                </DialogHeader>
+
+                {/* Share buttons */}
+                <div className="grid grid-cols-4 gap-4 py-4">
+                  {[
+                    { name: "WhatsApp", color: "bg-green-500" },
+                    { name: "Telegram", color: "bg-sky-500" },
+                    { name: "X", color: "bg-black" },
+                    { name: "Email", color: "bg-gray-600" },
+                  ].map((item) => (
+                    <button key={item.name} className={`flex flex-col items-center justify-center gap-2 rounded-lg p-3 text-white ${item.color}`}>
+                      <span className="text-xs font-medium">{item.name}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Copy link */}
+                <div className="flex items-center gap-2">
+                  <input readOnly value={videoUrl} className="flex-1 rounded-md border bg-muted px-3 py-2 text-sm" />
+                  <Button size="icon" className={`${wasStarted ? "bg-green-500 hover:bg-green-600 text-white" : ""}`} onClick={wasStarted ? undefined : shareVideo}>
+                    {wasStarted ? <IoCheckmarkDoneSharp /> : <MdOutlineContentCopy />}
+                  </Button>
+                </div>
+
+                {/* Embed */}
+                <div className="pt-3">
+                  <button className="text-sm text-muted-foreground hover:underline">Embed</button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -295,16 +363,18 @@ export default function WatchPage() {
       </div>
 
       {/* RIGHT: Recommendations */}
-      <aside className="w-[350px] p-2 h-full">
+      <aside className="w-full p-2 h-full col-span-91">
         <h2 className="text-lg font-semibold mb-4">Recommended</h2>
         <div className="space-y-4">
-          {[...Array(6)].map((_, i) => (
+          {relatedVideos.map((video, i) => (
             <div key={i} className="flex gap-3">
               {/* <div className="w-32 h-20 bg-gray-700 rounded" /> */}
-              <img src={"/thumb.jpg"} alt="video thumbnail" className="w-32 h-20 rounded-lg object-cover" />
+              <img src={video.thumbnailUrl} alt="video thumbnail" className="w-32 h-20 rounded-lg object-cover" />
               <div className="flex-1">
-                <p className="text-sm font-semibold leading-snug">Hack the Web #{i + 1}</p>
-                <p className="text-xs text-gray-400">DarkHacks • 120K views</p>
+                <p className="text-sm font-semibold leading-snug">{video.title}</p>
+                <p className="text-xs text-gray-400">
+                  {video.ownerDetails.username} • {video.viewCount} views
+                </p>
               </div>
             </div>
           ))}

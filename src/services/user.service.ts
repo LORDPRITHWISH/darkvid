@@ -25,6 +25,7 @@ export const refreshToken = () => {
   });
 };
 
+
 export const subscribeToChannel = (channelId: string) => {
   return apiRequest<SubscribeResponse>({
     method: "PUT",

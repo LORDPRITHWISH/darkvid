@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import moment from "moment";
 import { useHeartBeatStore } from "@/store/heartBeatStore";
+import { Progress } from "@/components/ui/progress";
 
 export default function HomePage() {
   // console.log(getVideo());
@@ -54,9 +55,14 @@ export default function HomePage() {
                 <div key={video.videoId} className="flex flex-col" onClick={() => navigate(`video/${video.videoId}`)}>
                   <div className="w-full aspect-video bg-gray-800 rounded-sm overflow-hidden relative">
                     <img src={video.thumbnailUrl || "/thumb.jpg"} alt="thumbnail" className="w-full h-full object-cover" />
-                    <div className=" absolute right-1.5 bottom-1.5 bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded">
+                    {video.hasViewed && <div className="absolute bg-gradient-to-t from-black via-transparent to-transparent bottom-0 w-full h-full" />}
+                    <div className={`absolute right-1.5 ${video.hasViewed ? "bottom-1.5" : "bottom-3.5"} bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded`}>
                       {video.duration ? formatDuration(video.duration) : "time"}
                     </div>
+                    {video.hasViewed && <div className=" absolute left-1.5 top-1.5 bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded">Watched </div>}
+                    {video.hasViewed && video.watchProgress !== undefined && (
+                      <Progress className=" absolute bottom-0 h-0.5 bg-slate-950/60  w-full" value={(video.watchProgress / video.duration) * 100} />
+                    )}
                   </div>
                   <div className="mt-2 flex  gap-2  ">
                     <Avatar className="size-11 mt-1">
@@ -67,7 +73,7 @@ export default function HomePage() {
                       <p className="font-semibold text-sm leading-tight line-clamp-2">{video.title ?? "Untitled Video"}</p>
                       <p className="text-xs text-gray-400">{video.ownerDetails.username}</p>
                       <p className="text-xs text-gray-500">
-                        {video.views} views • {moment(video.createdAt).fromNow()}
+                        {video.totalViews} views • {moment(video.createdAt).fromNow()}
                       </p>
                     </div>
                   </div>

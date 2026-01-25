@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Settings, LogOut, Layers, LifeBuoy, Terminal } from "lucide-react";
 import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router";
+import { logoutUser } from "@/services/auth.service";
 
 export function AvatarDropdown() {
   const { profilePhoto, name, email, logout } = useUserStore((s) => s);
@@ -68,6 +69,7 @@ export function AvatarDropdown() {
             className="text-red-600 focus:text-red-600"
             onClick={() => {
               logout();
+              logoutUser();
               navigate("/login");
             }}>
             <LogOut className="mr-2 h-4 w-4" />

@@ -18,23 +18,23 @@ const Header = () => {
     <div className=" flex p-1 bg-slate-950/30 top-0 sticky z-50 items-center justify-between backdrop-blur-xl">
       <div className="flex items-center gap-2">
         <button onClick={toggle} className="p-2 m-2 rounded-xl hover:bg-gray-700 transition">
-          <Menu size={28} className="text-white" />
+          <Menu size={22} className="text-white" />
         </button>
         <NavLink to="/" className={"text-white flex items-center gap-1"}>
-          <img src="/Darkvid.png" alt="Dark Logo" className="h-8 flex-shrink-0" />
-          <span className="font-bold flex text-2xl">DarkVids</span>
+          <img src="/darkvid_logo.png" alt="Dark Logo" className="h-6 flex-shrink-0" />
+          <span className="font-bold flex text-xl">DarkVids</span>
         </NavLink>
       </div>
       <div className="flex flex-col justify-between items-center text-center w-full max-w-xl mx-auto">
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full max-w-xl">
           <input type="text" placeholder="Search dark knowledge..." className="w-full rounded-full px-4 py-2 bg-zinc-900/70 text-sm focus:outline-none" />
-          <Search className="absolute top-2.5 right-3 text-gray-400" size={18} />
+          <Search className="absolute top-2.5 right-3 text-gray-400" size={20} />
         </div>
       </div>
       <div className="flex items-center gap-4">
         {location.pathname !== "/upload" && (
-          <button className="text-white p-2 rounded-xl bg-slate-800 hover:bg-slate-600 transition duration-200 flex items-center " onClick={() => navigate("/upload")}>
-            <Upload className="mr-2" />
+          <button className="text-white p-2 px-3 text-sm rounded-2xl bg-slate-800 hover:bg-slate-600 transition duration-200 flex items-center " onClick={() => navigate("/upload")}>
+            <Upload className="mr-2 " size={20} />
             upload
           </button>
         )}

@@ -9,6 +9,14 @@ export const getVideo = (videoId: string) => {
   return response;
 };
 
+export const getRelatedVideos = (videoId: string) => {
+  const response = apiRequest<{ data: any }>({
+    method: "GET",
+    url: `/video/${videoId}/related`,
+  });
+  return response;
+}
+
 export const startVideoWatch = (videoId: string, sessionId: string) => {
   const response = apiRequest<{ data: any }>({
     method: "POST",
