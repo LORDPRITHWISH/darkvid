@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router";
 
@@ -146,6 +145,11 @@ export default function SignupForm() {
         const res = await availUsername(username);
 
         console.log("The responce", res);
+
+        if (!res || !res.data) {
+          setUsernameStatus("error");
+          return;
+        }
 
         setUsernameStatus(res.data.available ? "available" : "taken");
       } catch {

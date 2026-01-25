@@ -2,7 +2,7 @@ import { initiateUpload } from "@/services/upload.service";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type UploadStatus = "idle" | "uploading" | "completed" | "failed";
+type UploadStatus = "idle" | "uploading" | "completed" | "failed" | "error";
 
 interface VideoState {
   Video: File | null;

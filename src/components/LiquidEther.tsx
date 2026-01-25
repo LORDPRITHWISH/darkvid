@@ -706,7 +706,7 @@ export default function LiquidEther({
         const props = args[0] || {};
         const forceX = (Mouse.diff.x / 2) * (props.mouse_force || 0);
         const forceY = (Mouse.diff.y / 2) * (props.mouse_force || 0);
-        const cellScale = props.cellScale || { x: 1, y: 1 };
+        // const cellScale = props.cellScale || { x: 1, y: 1 };
         const cursorSize = props.cursor_size || 0;
         
         // Use the current mouse coordinates directly (already in normalized space)
