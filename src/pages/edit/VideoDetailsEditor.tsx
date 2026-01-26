@@ -264,12 +264,20 @@ export default function DetailsZone() {
             <div className="text-gray-400 text-sm">{loading ? "Saving changes..." : "Saved"}</div>
             {isPublished ? (
               <div className="flex gap-4 flex-row w-fit">
+
+                <button
+                  className=" py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white w-32 "
+                  onClick={() => {
+                    navigate(-1);
+                  }}>
+                  Studio
+                </button>
                 <button
                   className=" py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-white w-32 "
                   onClick={() => {
                     navigate(-1);
                   }}>
-                  close
+                  Close
                 </button>
               </div>
             ) : (

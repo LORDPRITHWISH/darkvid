@@ -17,6 +17,7 @@ import UploadVideoPage from "./pages/upload/VideoUpload.js";
 import VideoDetailsEditor from "./pages/edit/VideoDetailsEditor.js";
 import AuthLayout from "./layouts/AuthLayout.js";
 import Signup from "./pages/auth/Signup.js";
+import Activity from "./pages/watch/Activity.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,7 +44,8 @@ const router = createBrowserRouter(
           <Route path=":videoid" element={<Video />} />
         </Route>
         <Route path="edit/" element={<Outlet />}>
-          <Route index element={<Navigate to="/studio" replace />} />
+          {/* <Route index element={<Navigate to="/studio" replace />} /> */}
+          <Route index element={<Activity />} />
           <Route path=":videoid" element={<VideoDetailsEditor />} />
         </Route>
         <Route path="tweet/" element={<Profile />}>

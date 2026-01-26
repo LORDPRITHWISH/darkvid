@@ -70,3 +70,11 @@ export const commentOnVideo = (videoId: string, commentText: string) => {
   });
   return response;
 };
+
+export const deleteVideo = (videoId: string) => {
+  const response = apiRequest<{ data: any }>({
+    method: "DELETE",
+    url: `/video/${videoId}`,
+  });
+  return response;
+}
