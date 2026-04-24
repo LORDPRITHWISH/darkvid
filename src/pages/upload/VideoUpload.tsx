@@ -3,7 +3,7 @@ import { FileUpload } from "@/components/upload/VideoUpload";
 import { useVideoStore } from "@/store/vidStore";
 import { useNavigate } from "react-router";
 
-export default function FileUploadDemo() {
+export default function FileUploadWizard() {
   const [files, setFiles] = useState<File | null>(null);
   const handleFileUpload = (files: File | null) => {
     setFiles(files);

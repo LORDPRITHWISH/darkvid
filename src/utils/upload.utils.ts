@@ -91,3 +91,4 @@ export async function uploadThumbnail(file: File, videoId: string) {
     console.error("No upload URL received for thumbnail.");
   }
 }
+
