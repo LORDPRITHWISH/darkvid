@@ -212,7 +212,20 @@ export default function WatchPage() {
             //   stopHeartBeat(true);
             // }}
           /> */}
-          <DarkPlayer src={videoDetails?.playbackUrl} />
+          <DarkPlayer
+            ref={videoRef}
+            src={videoDetails?.playbackUrl || ""}
+            poster={videoDetails?.thumbnailUrl}
+            onTimeUpdate={(e) => {
+              updateLastPosition(e.currentTarget.currentTime);
+            }}
+            onPause={() => {
+              stopHeartBeat();
+            }}
+            onPlay={() => {
+              startHeartBeat();
+            }}
+          />
         </div>
 
         {/* Title & Meta */}
