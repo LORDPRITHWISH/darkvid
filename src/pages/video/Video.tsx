@@ -17,6 +17,7 @@ import { getSessionKey } from "@/utils/session.util";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { DarkPlayer } from "@/components/player";
 // import { set } from "lodash";
 
 export default function WatchPage() {
@@ -186,8 +187,8 @@ export default function WatchPage() {
       {/* LEFT: Main content */}
       <div className="flex-1 px-4 col-span-293">
         {/* Video */}
-        <div className="w-full aspect-video bg-slate-900 rounded-xl overflow-hidden">
-          <video
+        <div className="w-full aspect-video rounded-xl overflow-hidden">
+          {/* <video
             ref={videoRef}
             className="w-full h-full"
             poster={videoDetails?.thumbnailUrl}
@@ -210,7 +211,8 @@ export default function WatchPage() {
             //   // console.log("the end", e);
             //   stopHeartBeat(true);
             // }}
-          />
+          /> */}
+          <DarkPlayer src={videoDetails?.playbackUrl} />
         </div>
 
         {/* Title & Meta */}
