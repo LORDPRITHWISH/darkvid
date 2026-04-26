@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Share2, Pencil, Reply, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -28,6 +28,20 @@ export default function WatchPage() {
   const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
 
   const [wasStarted, setWasStarted] = useState(false);
+  const [cinemaMode, setCinemaMode] = useState(false);
+
+  const toggleCinema = useCallback(() => setCinemaMode((prev) => !prev), []);
+
+  // ESC to exit cinema mode
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && cinemaMode) {
+        setCinemaMode(false);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [cinemaMode]);
 
   const sessionKey = getSessionKey();
 
@@ -183,49 +197,54 @@ export default function WatchPage() {
   // console.log("The Comments : ", userComments);
 
   return (
-    <div className="w-screen min-h-screen text-white ml-2 grid grid-cols-384 ">
+    <>
+      {/* Cinema Mode Overlay */}
+      {cinemaMode && (
+        <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+          <div className="w-full h-full max-h-screen">
+            <DarkPlayer
+              ref={videoRef}
+              src={videoDetails?.playbackUrl || ""}
+              poster={videoDetails?.thumbnailUrl}
+              cinemaMode={cinemaMode}
+              onCinemaToggle={toggleCinema}
+              onTimeUpdate={(e) => {
+                updateLastPosition(e.currentTarget.currentTime);
+              }}
+              onPause={() => {
+                stopHeartBeat();
+              }}
+              onPlay={() => {
+                startHeartBeat();
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+    <div className={`w-screen min-h-screen text-white ml-2 grid grid-cols-384 ${cinemaMode ? "invisible" : ""}`}>
       {/* LEFT: Main content */}
       <div className="flex-1 px-4 col-span-293">
         {/* Video */}
         <div className="w-full aspect-video rounded-xl overflow-hidden">
-          {/* <video
-            ref={videoRef}
-            className="w-full h-full"
-            poster={videoDetails?.thumbnailUrl}
-            controls
-            // autoPlay
-            src={videoDetails?.playbackUrl}
-            onTimeUpdate={(e) => {
-              updateLastPosition(e.currentTarget.currentTime);
-            }}
-            onPause={() => {
-              // const currentTime = e.currentTarget.currentTime;
-              // console.log("Paused at:", currentTime);
-              stopHeartBeat();
-              // fire API / save to DB / localStorage here
-            }}
-            onPlay={() => {
-              startHeartBeat();
-            }}
-            // onEnded={(e) => {
-            //   // console.log("the end", e);
-            //   stopHeartBeat(true);
-            // }}
-          /> */}
-          <DarkPlayer
-            ref={videoRef}
-            src={videoDetails?.playbackUrl || ""}
-            poster={videoDetails?.thumbnailUrl}
-            onTimeUpdate={(e) => {
-              updateLastPosition(e.currentTarget.currentTime);
-            }}
-            onPause={() => {
-              stopHeartBeat();
-            }}
-            onPlay={() => {
-              startHeartBeat();
-            }}
-          />
+          {!cinemaMode && (
+            <DarkPlayer
+              ref={videoRef}
+              src={videoDetails?.playbackUrl || ""}
+              poster={videoDetails?.thumbnailUrl}
+              cinemaMode={cinemaMode}
+              onCinemaToggle={toggleCinema}
+              onTimeUpdate={(e) => {
+                updateLastPosition(e.currentTarget.currentTime);
+              }}
+              onPause={() => {
+                stopHeartBeat();
+              }}
+              onPlay={() => {
+                startHeartBeat();
+              }}
+            />
+          )}
         </div>
 
         {/* Title & Meta */}
@@ -397,5 +416,6 @@ export default function WatchPage() {
         </div>
       </aside>
     </div>
+    </>
   );
 }
