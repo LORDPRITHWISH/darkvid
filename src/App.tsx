@@ -11,13 +11,20 @@ import About from "./pages/about/About.js";
 import Direct from "./pages/channel/Direct.js";
 import Video from "./pages/video/Video.js";
 import Upload from "./pages/upload/UploadDetailsEditor.js";
-import HomeLayout from "./layouts/HomeLayout.js";
+import BaseLayout from "./layouts/BaseLayout.js";
 import StudioPage from "./pages/studio/Studio.js";
 import UploadVideoPage from "./pages/upload/VideoUpload.js";
 import VideoDetailsEditor from "./pages/edit/VideoDetailsEditor.js";
 import AuthLayout from "./layouts/AuthLayout.js";
 import Signup from "./pages/auth/Signup.js";
 import Activity from "./pages/watch/Activity.js";
+import Subscriptions from "./pages/subscriptions/Subscriptions.js";
+import Explore from "./pages/explore/Explore.js";
+import Trending from "./pages/trending/Trending.js";
+import WatchLater from "./pages/watchlater/WatchLater.js";
+import Library from "./pages/library/Library.js";
+import Playlists from "./pages/playlists/Playlists.js";
+import History from "./pages/history/History.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,9 +34,16 @@ const router = createBrowserRouter(
         <Route path="signup" element={<Signup />} />
       </Route>
       <Route element={<MainLayout />}>
-        <Route element={<HomeLayout />}>
+        <Route element={<BaseLayout />}>
           <Route index element={<Home />} />
-          {/* <Route path="app" element={<App />} /> */}
+          <Route path="subscriptions" element={<Subscriptions />} />
+          <Route path="explore" element={<Explore />} />
+          <Route path="trending" element={<Trending />} />
+          <Route path="watchlater" element={<WatchLater />} />
+          <Route path="library" element={<Library />} />
+          <Route path="playlists" element={<Playlists />} />
+          <Route path="history" element={<History />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
         <Route path="about" element={<About />} />
 

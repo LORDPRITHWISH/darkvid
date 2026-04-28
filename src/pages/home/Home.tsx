@@ -7,7 +7,7 @@ import moment from "moment";
 import { useHeartBeatStore } from "@/store/heartBeatStore";
 import { Progress } from "@/components/ui/progress";
 
-export default function HomePage() {
+export default function Home() {
   // console.log(getVideo());
   const [videos, setVideos] = useState<VideoPreview[]>([]);
   const { cleanPlayer } = useHeartBeatStore();
@@ -41,47 +41,41 @@ export default function HomePage() {
   }
 
   return (
-    <div className="w-screen min-h-screen bg-black text-white flex">
-      {/* Main Content */}
-      <div className="flex-1 ml-14">
-        {/* Video Grid */}
-        <main className="p-6">
-          <h2 className="text-xl font-semibold mb-4">🔥 Recommended for Darkness</h2>
+    <main className="p-6">
+      <h2 className="text-xl font-semibold mb-4">🔥 Recommended for Darkness</h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {videos &&
-              videos.length > 0 &&
-              videos.map((video) => (
-                <div key={video.videoId} className="flex flex-col" onClick={() => navigate(`video/${video.videoId}`)}>
-                  <div className="w-full aspect-video bg-gray-800 rounded-sm overflow-hidden relative">
-                    <img src={video.thumbnailUrl || "/thumb.jpg"} alt="thumbnail" className="w-full h-full object-cover" />
-                    {video.hasViewed && <div className="absolute bg-gradient-to-t from-black via-transparent to-transparent bottom-0 w-full h-full" />}
-                    <div className={`absolute right-1.5 ${video.hasViewed ? "bottom-1.5" : "bottom-3.5"} bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded`}>
-                      {video.duration ? formatDuration(video.duration) : "time"}
-                    </div>
-                    {video.hasViewed && <div className=" absolute left-1.5 top-1.5 bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded">Watched </div>}
-                    {video.hasViewed && video.watchProgress !== undefined && (
-                      <Progress className=" absolute bottom-0 h-0.5 bg-slate-950/60  w-full" value={(video.watchProgress / video.duration) * 100} />
-                    )}
-                  </div>
-                  <div className="mt-2 flex  gap-2  ">
-                    <Avatar className="size-11 mt-1">
-                      <AvatarImage src={video.ownerDetails.profilepic || "/profile.jpg"} alt="channel" />
-                      <AvatarFallback>{video.ownerDetails.username.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="mt-2 ">
-                      <p className="font-semibold text-sm leading-tight line-clamp-2">{video.title ?? "Untitled Video"}</p>
-                      <p className="text-xs text-gray-400">{video.ownerDetails.username}</p>
-                      <p className="text-xs text-gray-500">
-                        {video.totalViews} views • {moment(video.createdAt).fromNow()}
-                      </p>
-                    </div>
-                  </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        {videos &&
+          videos.length > 0 &&
+          videos.map((video) => (
+            <div key={video.videoId} className="flex flex-col" onClick={() => navigate(`video/${video.videoId}`)}>
+              <div className="w-full aspect-video bg-gray-800 rounded-sm overflow-hidden relative">
+                <img src={video.thumbnailUrl || "/thumb.jpg"} alt="thumbnail" className="w-full h-full object-cover" />
+                {video.hasViewed && <div className="absolute bg-gradient-to-t from-black via-transparent to-transparent bottom-0 w-full h-full" />}
+                <div className={`absolute right-1.5 ${video.hasViewed ? "bottom-1.5" : "bottom-3.5"} bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded`}>
+                  {video.duration ? formatDuration(video.duration) : "time"}
                 </div>
-              ))}
-          </div>
-        </main>
+                {video.hasViewed && <div className=" absolute left-1.5 top-1.5 bg-slate-950/60  text-white text-sm  px-1.5 py-0.5 rounded">Watched </div>}
+                {video.hasViewed && video.watchProgress !== undefined && (
+                  <Progress className=" absolute bottom-0 h-0.5 bg-slate-950/60  w-full" value={(video.watchProgress / video.duration) * 100} />
+                )}
+              </div>
+              <div className="mt-2 flex  gap-2  ">
+                <Avatar className="size-11 mt-1">
+                  <AvatarImage src={video.ownerDetails.profilepic || "/profile.jpg"} alt="channel" />
+                  <AvatarFallback>{video.ownerDetails.username.charAt(0).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div className="mt-2 ">
+                  <p className="font-semibold text-sm leading-tight line-clamp-2">{video.title ?? "Untitled Video"}</p>
+                  <p className="text-xs text-gray-400">{video.ownerDetails.username}</p>
+                  <p className="text-xs text-gray-500">
+                    {video.totalViews} views • {moment(video.createdAt).fromNow()}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
       </div>
-    </div>
+    </main>
   );
 }

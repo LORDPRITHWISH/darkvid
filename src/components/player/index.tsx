@@ -8,6 +8,7 @@ import { forwardRef, type VideoHTMLAttributes } from "react";
 import { Monitor, MonitorX } from "lucide-react";
 import { DarkVideoSkin } from "./DarkVideoSkin";
 
+
 const Player = createPlayer({ features: videoFeatures });
 
 interface DarkPlayerProps

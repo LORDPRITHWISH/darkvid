@@ -1,30 +1,17 @@
 // import { useState } from "react";
-import { X, Home, Upload, Users, Star } from "lucide-react";
+import { X } from "lucide-react";
 import { useSidebarState } from "@/store/sideStore";
-import { useNavigate } from "react-router";
-// import { link } from "fs";
-
-const navItems = [
-  { icon: Home, label: "Home" ,link: ""},
-  { icon: Users, label: "Subscribed", link: "subscribed" },
-  { icon: Upload, label: "Upload", link: "upload" },
-  { icon: Star, label: "Top Channels", link: "top-channels" },
-];
+import { useNavigate, useLocation } from "react-router";
+import { navLinks } from "@/utils/navLinks";
 
 export default function Sidebar() {
   // const [open, setOpen] = useState(false);
   const { open, toggle } = useSidebarState();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
-      {/* Toggle Button */}
-      {/* <button
-        onClick={() => setOpen(true)}
-        className="fixed top-4 left-4 z-50 p-2 bg-zinc-800 rounded-full hover:bg-zinc-700 transition"
-      >
-        <Menu size={24} className="text-white" />
-      </button> */}
 
       {/* Sidebar Overlay */}
       <div
@@ -47,18 +34,22 @@ export default function Sidebar() {
         </div>
 
         <nav className="mt-4 px-4 flex flex-col gap-3">
-          {navItems.map(({ icon: Icon, label, link }) => (
-            <button
-              key={label}
-              className="flex items-center gap-3 text-white hover:bg-zinc-800 p-2 rounded transition"
-              onClick={() => {
-                navigate(link);
-                toggle();
-              }}>
-              <Icon size={28} />
-              <span>{label}</span>
-            </button>
-          ))}
+          {navLinks.map(({ icon: Icon, activeIcon: ActiveIcon, label, link }) => {
+            const isActive = location.pathname === `/${link}` || (link === "" && location.pathname === "/");
+            const CurrentIcon = isActive ? ActiveIcon : Icon;
+            return (
+              <button
+                key={label}
+                className={`flex items-center gap-3 hover:bg-zinc-800 p-2 rounded transition ${isActive ? "text-white font-bold" : "text-gray-300"}`}
+                onClick={() => {
+                  navigate(link);
+                  toggle();
+                }}>
+                <CurrentIcon size={28} />
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </nav>
       </aside>
     </>
