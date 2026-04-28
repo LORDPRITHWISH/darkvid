@@ -1,9 +1,9 @@
-import { BiHomeAlt2, BiSolidHomeAlt2, BiVideo, BiSolidVideos } from "react-icons/bi";
+import { BiHomeAlt2, BiSolidHomeAlt2, BiVideo, BiSolidVideos, BiSolidHome, BiHome } from "react-icons/bi";
 import { MdOutlineSubscriptions, MdSubscriptions, MdOutlineExplore, MdExplore, MdOutlineWatchLater, MdWatchLater, MdOutlineHistory, MdHistory, MdOutlinePlaylistPlay, MdPlaylistPlay, MdOutlineWhatshot, MdWhatshot } from "react-icons/md";
 import { FaRegUserCircle, FaUserCircle } from "react-icons/fa";
 
 export const quickLinks = [
-  { icon: BiHomeAlt2, activeIcon: BiSolidHomeAlt2, label: "Home", link: "" },
+  { icon: BiHome, activeIcon: BiSolidHome, label: "Home", link: "" },
   { icon: MdOutlineSubscriptions, activeIcon: MdSubscriptions, label: "Subscriptions", link: "subscriptions" },
   { icon: MdOutlineExplore, activeIcon: MdExplore, label: "Explore", link: "explore" },
   { icon: MdOutlineWhatshot, activeIcon: MdWhatshot, label: "Trending", link: "trending" },
