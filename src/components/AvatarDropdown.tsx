@@ -23,8 +23,8 @@ export function AvatarDropdown() {
         {/* Header with avatar and info */}
         <div className="flex items-center gap-3 p-4 pb-3 border-b">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={profilePhoto || "/profilepic.png"} alt="Olivia Rhye" />
-            <AvatarFallback>OR</AvatarFallback>
+            <AvatarImage src={profilePhoto || "/profilepic.png"} alt={name || "Unknown"} referrerPolicy="no-referrer" />
+            <AvatarFallback>{name ? name.substring(0, 2).toUpperCase() : "UN"}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
             <span className="text-sm font-medium">{name}</span>

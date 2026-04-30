@@ -57,6 +57,7 @@ export const DarkPlayer = forwardRef<HTMLVideoElement, DarkPlayerProps>(
               <Video
                 ref={ref}
                 src={src}
+                
                 poster={poster}
                 playsInline
                 {...videoProps}
