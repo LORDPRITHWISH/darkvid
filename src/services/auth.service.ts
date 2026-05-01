@@ -3,7 +3,7 @@ import { apiRequest } from "@/api/apiClient";
 export const loginUser = (payload: { identity: string; password: string }) => {
   return apiRequest<{ data: any }>({
     method: "POST",
-    url: `/users/login`,
+    url: `/user/login`,
     data: payload,
   });
 }
@@ -11,7 +11,7 @@ export const loginUser = (payload: { identity: string; password: string }) => {
 export const availUsername = (username: string) => {
   return apiRequest<{ data: any }>({
     method: "GET",
-    url: `/users/available/${username}`,
+    url: `/user/available/${username}`,
   });
 }
 
@@ -31,7 +31,7 @@ export const registerUser = (payload: { fullname: string; email: string; usernam
 
   return apiRequest<{ data: any }>({
     method: "POST",
-    url: "/users/register",
+    url: "/user/register",
     data: formData,
     // headers: {
     //   "Content-Type": "multipart/form-data",
@@ -43,7 +43,7 @@ export const registerUser = (payload: { fullname: string; email: string; usernam
 export const logoutUser = () => {
   return apiRequest<{ data: any }>({
     method: "POST",
-    url: `/users/logout`,
+    url: `/user/logout`,
   });
 }
 

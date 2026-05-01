@@ -25,23 +25,6 @@ function Channel() {
   useEffect(() => {
     if (!userid) return;
 
-    // console.log("Fetching channel data for:", userid);
-
-    // getUserChannel(userid).then((response) => {
-    //   console.log("api responce :", response);
-    // });
-
-    // axios
-    //   .get(`${import.meta.env.VITE_API_URL}/api/v1/users/c/${userid}`, { withCredentials: true })
-    //   .then((res) => {
-    //     setChannel(res.data.data);
-    //   })
-    //   .catch(() => {
-    //     setError("Failed to fetch channel");
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
 
     const fetchChannel = async () => {
       try {

@@ -62,11 +62,12 @@ export default function LoginForm() {
       }
 
       // TODO: Save token (localStorage/cookie), redirect, etc.
-    } catch (err: any) {
+    } catch (err) {
       console.error("From Catch", err);
 
-      if (err.response) {
-        setApiError(err.response.data.message || "Login failed");
+      const error = err as { response?: { data?: { message?: string } } };
+      if (error.response) {
+        setApiError(error.response.data?.message || "Login failed");
       } else {
         setApiError("Server not reachable");
       }
@@ -141,7 +142,7 @@ export default function LoginForm() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-2">
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full cursor-pointer">
               {loading ? "Logging in..." : "Login"}
             </Button>
 
@@ -150,25 +151,22 @@ export default function LoginForm() {
                 <span className="w-full border-t border-slate-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-slate-950 px-2 text-muted-foreground">
-                  Or continue with
-                </span>
+                <span className=" px-4 text-muted-foreground">Or continue with</span>
               </div>
             </div>
 
             <Button
               type="button"
               variant="outline"
-              className="w-full bg-white text-black hover:bg-slate-200 mb-2"
+              className="w-full bg-white cursor-pointer hover:bg-slate-200 mb-2"
               onClick={() => {
                 window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/google`;
-              }}
-            >
+              }}>
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5 mr-2" alt="Google" />
               Sign in with Google
             </Button>
 
-            <Button type="button" variant="ghost" className="w-full" onClick={() => navigate("/signup")}>
+            <Button type="button" variant="ghost" className="w-full cursor-pointer" onClick={() => navigate("/signup")}>
               Create New Account?
             </Button>
           </CardFooter>

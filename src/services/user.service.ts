@@ -6,7 +6,7 @@ import type { SubscribeResponse } from "@/types/api.types";
 export const getUserChannel = (userid: string) => {
   const responce = apiRequest<{ data: any }>({
     method: "GET",
-    url: `/users/c/${userid}`,
+    url: `/user/c/${userid}`,
   });
   return responce;
 };
@@ -14,14 +14,14 @@ export const getUserChannel = (userid: string) => {
 export const getProfile = () => {
   return apiRequest<{ data: any }>({
     method: "GET",
-    url: `/users/profile`,
+    url: `/user/profile`,
   });
 };
 
 export const refreshToken = () => {
   return apiRequest<{ data: any }>({
     method: "POST",
-    url: `/users/refresh_token`,
+    url: `/user/refresh_token`,
   });
 };
 

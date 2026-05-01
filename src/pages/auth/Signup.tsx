@@ -114,12 +114,10 @@ export default function SignupForm() {
         console.error("Error setting user in store:", e);
       }
 
-      // setUser(res.data.user._id, res.data.user.name, res.data.user.profilepic, res.data.user.email);
-
-      // navigate("/");
-    } catch (err: any) {
-      if (err.response) {
-        setApiError(err.response.data.message || "Signup failed");
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } } };
+      if (error.response) {
+        setApiError(error.response.data?.message || "Signup failed");
       } else {
         setApiError("Server not reachable");
       }
@@ -351,7 +349,7 @@ export default function SignupForm() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-2">
-            <Button type="submit" disabled={loading} className="w-full">
+            <Button type="submit" disabled={loading} className="w-full cursor-pointer">
               {loading ? "Creating account..." : "Sign Up"}
             </Button>
 
@@ -360,25 +358,22 @@ export default function SignupForm() {
                 <span className="w-full border-t border-slate-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className=" px-2 text-muted-foreground">
-                  Or continue with
-                </span>
+                <span className=" px-2 text-muted-foreground">Or continue with</span>
               </div>
             </div>
 
             <Button
               type="button"
               variant="outline"
-              className="w-full bg-white text-black hover:bg-slate-200 mb-2"
+              className="w-full bg-white cursor-pointer hover:bg-slate-200 mb-2"
               onClick={() => {
                 window.location.href = `${import.meta.env.VITE_API_URL}/api/v1/auth/google`;
-              }}
-            >
+              }}>
               <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5 mr-2" alt="Google" />
               Sign in with Google
             </Button>
 
-            <Button type="button" variant="ghost" className="w-full" onClick={() => navigate("/login")}>
+            <Button type="button" variant="ghost" className="w-full cursor-pointer" onClick={() => navigate("/login")}>
               Already have an account?
             </Button>
           </CardFooter>
