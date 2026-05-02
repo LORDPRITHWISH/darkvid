@@ -1,12 +1,14 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, Settings, LogOut, Layers, LifeBuoy, Terminal } from "lucide-react";
+import { User, Settings, LogOut, Layers, LifeBuoy, Terminal, ShieldUser } from "lucide-react";
 import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router";
 import { logoutUser } from "@/services/auth.service";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
+import { Button } from "./ui/button";
 
 export function AvatarDropdown() {
-  const { profilePhoto, name, email, logout } = useUserStore((s) => s);
+  const { profilePhoto, name, username, logout, role, email } = useUserStore((s) => s);
 
   const navigate = useNavigate();
 
@@ -28,7 +30,16 @@ export function AvatarDropdown() {
           </Avatar>
           <div className="flex flex-col">
             <span className="text-sm font-medium">{name}</span>
-            <span className="text-xs text-muted-foreground">{email}</span>
+            {/* <span className="text-xs text-muted-foreground">{username}</span> */}
+            <HoverCard openDelay={10} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <span className="text-sm text-muted-foreground">@{username}</span>
+                {/* <Button variant="ghost">Hover Here</Button> */}
+              </HoverCardTrigger>
+              <HoverCardContent className="flex w-fit p-2 flex-col gap-0.5" side="top">
+                <div className="text-xs">{email}</div>
+              </HoverCardContent>
+            </HoverCard>
           </div>
         </div>
 
@@ -58,10 +69,19 @@ export function AvatarDropdown() {
             <span>Support</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            <Terminal className="mr-2 h-4 w-4" />
-            <span>API</span>
-          </DropdownMenuItem>
+          {role === "admin" && (
+            <DropdownMenuItem>
+              <Terminal className="mr-2 h-4 w-4" />
+              <span>API</span>
+            </DropdownMenuItem>
+          )}
+
+          {role === "admin" && (
+            <DropdownMenuItem onClick={() => navigate("/admin")}>
+              <ShieldUser className="mr-2 h-4 w-4" />
+              <span>Admin</span>
+            </DropdownMenuItem>
+          )}
 
           <DropdownMenuSeparator />
 

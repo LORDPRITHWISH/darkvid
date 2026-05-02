@@ -9,8 +9,7 @@ import { AvatarDropdown } from "./AvatarDropdown";
 import { FaPlus } from "react-icons/fa6";
 
 const Header = () => {
-  // const userId = useUserStore((s) => s.userId);
-  // const profilePhoto = useUserStore((s) => s.profilePhoto);
+
   const { toggle } = useSidebarState();
   const navigate = useNavigate();
   const location = useLocation();

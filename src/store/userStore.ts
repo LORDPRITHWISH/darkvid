@@ -7,30 +7,41 @@ type UserState = {
   name: string | null;
   email: string | null;
   profilePhoto: string | null;
+  isUserFetched: boolean;
+  username: string | null;
+  role: "user" | "admin" | null;
+  isLoggedIn: boolean;
 
-  setUser: (userId: string, name: string, profilePhoto: string, email: string) => void;
+  setUser: (userId: string, username: string, name: string, profilePhoto: string, email: string, role: "user" | "admin" | null) => void;
+  setIsUserFetched: (fetched: boolean) => void;
   logout: () => void;
 };
 
 export const useUserStore = create<UserState>()(
   devtools(
-  persist(
+    persist(
       (set) => ({
         userId: null,
         profilePhoto: null,
         username: null,
         email: null,
         name: null,
+        isUserFetched: false,
+        isLoggedIn: false,
+        role: null,
 
-        setUser: (userId, name, profilePhoto, email) => set({ userId, name, profilePhoto, email }),
-        logout: () => set({ userId: null, name: null, profilePhoto: null, email: null }),
+        setUser: (userId: string, username: string, name: string, profilePhoto: string, email: string, role: "user" | "admin" | null) =>
+          set({ userId, username, name, profilePhoto, email, role, isLoggedIn: true }),
+        setIsUserFetched: (fetched: boolean) => set({ isUserFetched: fetched }),
+        logout: () => set({ userId: null, username: null, name: null, profilePhoto: null, email: null, isLoggedIn: false, role: null }),
       }),
       {
-        name: "user-store", // devtools name
-      }
+        name: "user-store", // persist name
+        partialize: (state) => Object.fromEntries(Object.entries(state).filter(([key]) => key !== "isUserFetched" && key !== "role" && key !== "isLoggedIn")),
+      },
     ),
     {
-      name: "user-store", // localStorage key
-    }
-  )
+      name: "user-store", // devtools name
+    },
+  ),
 );

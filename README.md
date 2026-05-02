@@ -67,3 +67,24 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Deployment
+
+### 🔥 2. Deploy it to Nginx root
+Your root: `/var/www/darkvid-frontend`
+
+Clean old files:
+```bash
+sudo rm -rf /var/www/darkvid-frontend/*
+```
+
+Copy new build:
+```bash
+sudo cp -r dist/* /var/www/darkvid-frontend/
+```
+
+### 🔐 3. Fix permissions
+```bash
+sudo chown -R www-data:www-data /var/www/darkvid-frontend
+sudo chmod -R 755 /var/www/darkvid-frontend
+```

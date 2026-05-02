@@ -25,6 +25,10 @@ import WatchLater from "./pages/watchlater/WatchLater.js";
 import Library from "./pages/library/Library.js";
 import Playlists from "./pages/playlists/Playlists.js";
 import History from "./pages/history/History.js";
+import AdminDashboard from "./pages/admin/dashboard.tsx/AdminDashboard.js";
+import AuthGuard from "./components/guards/AuthGuard.js";
+import EivationGuard from "./components/guards/EivationGuard.js";
+import AdminLayout from "./layouts/AdminLayout.js";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,26 +61,35 @@ const router = createBrowserRouter(
           <Route index element={<Navigate to="/" replace />} />
           <Route path=":videoid" element={<Video />} />
         </Route>
-        <Route path="edit/" element={<Outlet />}>
-          {/* <Route index element={<Navigate to="/studio" replace />} /> */}
-          <Route index element={<Activity />} />
-          <Route path=":videoid" element={<VideoDetailsEditor />} />
-        </Route>
-        <Route path="tweet/" element={<Profile />}>
-          <Route path=":userid" element={<Profile />} />
-        </Route>
-        <Route path="upload/" element={<Outlet />}>
-          <Route index element={<UploadVideoPage />} />
-          <Route path=":videoid" element={<Upload />} />
-        </Route>
-        <Route path="studio/" element={<StudioPage />} />
-        <Route path="settings/" element={<Profile />} />
-        <Route path="subsciption/" element={<Profile />} />
-        <Route path="chat/" element={<Profile />}>
-          <Route path=":userid" element={<Profile />} />
+        <Route element={<AuthGuard />}>
+          {/* <Route></Route> */}
+          <Route path="edit/" element={<Outlet />}>
+            {/* <Route index element={<Navigate to="/studio" replace />} /> */}
+            <Route index element={<Activity />} />
+            <Route path=":videoid" element={<VideoDetailsEditor />} />
+          </Route>
+          <Route path="tweet/" element={<Profile />}>
+            <Route path=":userid" element={<Profile />} />
+          </Route>
+          <Route path="upload/" element={<Outlet />}>
+            <Route index element={<UploadVideoPage />} />
+            <Route path=":videoid" element={<Upload />} />
+          </Route>
+          <Route path="studio/" element={<StudioPage />} />
+          <Route path="settings/" element={<Profile />} />
+          <Route path="subsciption/" element={<Profile />} />
+          <Route path="chat/" element={<Profile />}>
+            <Route path=":userid" element={<Profile />} />
+          </Route>
+
         </Route>
 
         <Route path="*" element={<Notfound />} />
+      <Route path="admin" element={<EivationGuard />}>
+        <Route element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+        </Route>
+      </Route>
       </Route>
     </Route>,
   ),
