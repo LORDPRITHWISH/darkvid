@@ -30,6 +30,8 @@ import AuthGuard from "./components/guards/AuthGuard.js";
 import AdminGuard from "./components/guards/AdminGuard.js";
 import AdminLayout from "./layouts/AdminLayout.js";
 import Setdata from "./components/Setdata.js";
+import AdminUserManagement from "./pages/admin/management/AdminUserManagement.js";
+import AdminVideoManagement from "./pages/admin/management/AdminVideoManagement.js";
 
 const RootLayout = () => {
   return (
@@ -91,7 +93,6 @@ const router = createBrowserRouter(
           <Route path="chat/" element={<Profile />}>
             <Route path=":userid" element={<Profile />} />
           </Route>
-
         </Route>
 
         <Route path="*" element={<Notfound />} />
@@ -101,6 +102,10 @@ const router = createBrowserRouter(
       <Route path="admin" element={<AdminGuard />}>
         <Route element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUserManagement />} />
+          {/* <Route path="user/:userid" element={<Profile />} /> */}
+          <Route path="videos" element={<AdminVideoManagement />} />
+          {/* <Route path="video/:videoid" element={<Video />} /> */}
           <Route path="*" element={<Notfound />} />
         </Route>
       </Route>

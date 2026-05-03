@@ -50,12 +50,12 @@ export default function LoginForm() {
       }
 
       const res = response.data;
-      console.log("The User:", res.user);
+      // console.log("The User:", res.user);
 
       // useUserStore.getState().setUser(res.data._id, res.data.profilePhoto);
 
       try {
-        setUser(res.user._id, res.user.name, res.user.profilepic, res.user.email);
+        setUser(res.user._id, res.user.username, res.user.name, res.user.profilepic, res.user.email,res.user.role);
         navigate("/"); // Redirect to home or dashboard after successful login
       } catch (e) {
         console.error("Error setting user in store:", e);
