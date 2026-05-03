@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 function Profile() {
   const { userid } = useParams();
   return (
-    <div>Profile-{userid}</div>
+    <div>Profile</div>
   )
 }
 
