@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import { useUserStore } from "@/store/userStore";
 import { Navigate } from "react-router";
 
-const EivationGuard = () => {
+const AdminGuard = () => {
   const isLoggedIn = useUserStore((state) => state.isLoggedIn);
   const isUserFetched = useUserStore((state) => state.isUserFetched);
 
@@ -17,4 +17,4 @@ const EivationGuard = () => {
   return <Outlet />;
 };
 
-export default EivationGuard;
+export default AdminGuard;

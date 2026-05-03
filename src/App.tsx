@@ -27,12 +27,22 @@ import Playlists from "./pages/playlists/Playlists.js";
 import History from "./pages/history/History.js";
 import AdminDashboard from "./pages/admin/dashboard.tsx/AdminDashboard.js";
 import AuthGuard from "./components/guards/AuthGuard.js";
-import EivationGuard from "./components/guards/EivationGuard.js";
+import AdminGuard from "./components/guards/AdminGuard.js";
 import AdminLayout from "./layouts/AdminLayout.js";
+import Setdata from "./components/Setdata.js";
+
+const RootLayout = () => {
+  return (
+    <>
+      <Setdata />
+      <Outlet />
+    </>
+  );
+};
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<Outlet />}>
+    <Route element={<RootLayout />}>
       <Route element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
@@ -85,11 +95,14 @@ const router = createBrowserRouter(
         </Route>
 
         <Route path="*" element={<Notfound />} />
-      <Route path="admin" element={<EivationGuard />}>
+      </Route>
+
+      {/* Admin Route outside MainLayout */}
+      <Route path="admin" element={<AdminGuard />}>
         <Route element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
+          <Route path="*" element={<Notfound />} />
         </Route>
-      </Route>
       </Route>
     </Route>,
   ),
