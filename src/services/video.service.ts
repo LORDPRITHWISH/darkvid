@@ -53,7 +53,6 @@ export const getVideoDetails = (videoId: string) => {
 };
 
 export const toggleVideoLike = (videoId: string, mode: "like" | "dislike" | "") => {
-  // console.log("the video was", mode.length);
   const response = apiRequest<LikeResponse>({
     method: "POST",
     url: `/like/toggle/v/${videoId}`,

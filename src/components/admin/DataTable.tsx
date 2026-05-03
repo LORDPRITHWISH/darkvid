@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export interface ColumnDef<T> {
   header: React.ReactNode;
@@ -24,6 +25,7 @@ interface DataTableProps<T> {
   loading?: boolean;
   pagination?: PaginationData | null;
   onPageChange?: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
   emptyMessage?: string;
   keyExtractor: (item: T) => string;
 }
@@ -34,6 +36,7 @@ export function DataTable<T>({
   loading,
   pagination,
   onPageChange,
+  onLimitChange,
   emptyMessage = "No results found.",
   keyExtractor,
 }: DataTableProps<T>) {
@@ -89,10 +92,29 @@ export function DataTable<T>({
       </div>
 
       {/* Pagination Footer */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="p-4 border-t border-white/5 flex items-center justify-between bg-[#09090b] shrink-0 z-10">
-          <div className="text-sm text-zinc-500 hidden sm:block">
-            Showing <span className="text-zinc-300 font-medium">{((pagination.page - 1) * pagination.limit) + 1}</span> to <span className="text-zinc-300 font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> of <span className="text-zinc-300 font-medium">{pagination.total}</span> entries
+      {pagination && pagination.totalPages > 0 && (
+        <div className="p-4 border-t border-white/5 flex items-center justify-between bg-[#09090b] shrink-0 z-10 flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-zinc-500 hidden sm:block">
+              Showing <span className="text-zinc-300 font-medium">{((pagination.page - 1) * pagination.limit) + 1}</span> to <span className="text-zinc-300 font-medium">{Math.min(pagination.page * pagination.limit, pagination.total)}</span> of <span className="text-zinc-300 font-medium">{pagination.total}</span> entries
+            </div>
+            {onLimitChange && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-zinc-500">Rows per page</span>
+                <Select value={pagination.limit.toString()} onValueChange={(v) => onLimitChange(Number(v))}>
+                  <SelectTrigger className="h-8 w-[70px] bg-transparent border-white/10 text-white focus:ring-0 focus:ring-offset-0">
+                    <SelectValue placeholder={pagination.limit} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#09090b] border-white/10 text-white">
+                    {[10, 20, 50, 100].map((size) => (
+                      <SelectItem key={size} value={size.toString()} className="focus:bg-white/10 focus:text-white">
+                        {size}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <Button
