@@ -4,9 +4,9 @@
 const Footer = () => {
   // const { count } = useTester();
   return (
-    <div className="bg-blue-900/20 w-full">
+    <div className="bg-slate-950/60 w-full">
       <div className="flex flex-col justify-center items-center p-1">
-        <p className="text-slate-200/40 font-bold">coyright @DarkLord</p>
+        <p onClick={() => window.open("https://github.com/LORDPRITHWISH", "_blank")} className="text-slate-400/60 hover:text-slate-300 transition-colors duration-200 text-md cursor-pointer">coyright @LORDPRITHWISH</p>
         {/* <p className="text-white text-lg">Current Count: {count}</p> */}
 
       </div>

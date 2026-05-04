@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import moment from "moment";
 import { useHeartBeatStore } from "@/store/heartBeatStore";
+import { useUserStore } from "@/store/userStore";
 import { Progress } from "@/components/ui/progress";
 
 export default function Home() {
   // console.log(getVideo());
   const [videos, setVideos] = useState<VideoPreview[]>([]);
   const { cleanPlayer } = useHeartBeatStore();
+  const { username } = useUserStore();
   useEffect(() => {
     cleanPlayer();
     getVideo()
@@ -36,13 +38,12 @@ export default function Home() {
       return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    // Otherwise, show MM:SS
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   }
 
   return (
     <main className="p-6">
-      <h2 className="text-xl font-semibold mb-4">🔥 Recommended for Darkness</h2>
+      <h2 className="text-xl font-semibold mb-4">Recommended for {username}</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {videos &&

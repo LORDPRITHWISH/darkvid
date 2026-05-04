@@ -60,15 +60,15 @@ const router = createBrowserRouter(
           <Route path="playlists" element={<Playlists />} />
           <Route path="history" element={<History />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="channel/" element={<Outlet />}>
+            {/* <Route index element={<Navigate to="/" replace />} /> */}
+            <Route index element={<Direct />} />
+            <Route path=":userid" element={<Channel />} />
+          </Route>
         </Route>
         <Route path="about" element={<About />} />
 
         <Route path="@:userid" element={<Profile />} />
-        <Route path="channel/" element={<Outlet />}>
-          {/* <Route index element={<Navigate to="/" replace />} /> */}
-          <Route index element={<Direct />} />
-          <Route path=":userid" element={<Channel />} />
-        </Route>
         <Route path="video/" element={<Outlet />}>
           <Route index element={<Navigate to="/" replace />} />
           <Route path=":videoid" element={<Video />} />

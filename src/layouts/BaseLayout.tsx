@@ -6,7 +6,7 @@ const BaseLayout = () => {
   return (
     <>
       <Sidelink />
-      <div className="w-screen min-h-screen bg-black text-white flex">
+      <div className="w-screen min-h-screen text-white flex">
         {/* Main Content */}
         <div className="flex-1 ml-16">
           {/* the  ontent will render from here */}

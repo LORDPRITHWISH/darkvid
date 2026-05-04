@@ -15,7 +15,7 @@ const Header = () => {
   const location = useLocation();
 
   return (
-    <div className=" flex px-2 bg-slate-950/30 top-0 sticky z-50 items-center justify-between backdrop-blur-xl">
+    <div className=" flex px-2 bg-zinc-900/0 top-0 sticky z-50 items-center justify-between backdrop-blur-xl">
       <div className="flex items-center gap-2">
         <button onClick={toggle} className="p-2 m-2 rounded-xl hover:bg-gray-700 transition">
           <Menu size={24} className="text-white" />
@@ -34,7 +34,7 @@ const Header = () => {
       <div className="flex items-center gap-4 px-4">
         {location.pathname !== "/upload" && (
           <button
-            className="text-white p-2 px-3 text-sm rounded-2xl bg-slate-800 hover:bg-slate-600 transition duration-200 flex items-center "
+            className="text-white p-2 px-3 text-sm rounded-xl bg-slate-900 hover:bg-slate-600 transition duration-200 flex items-center "
             onClick={() => navigate("/upload")}>
             <FaPlus className="mr-2 " size={20} />
             Create

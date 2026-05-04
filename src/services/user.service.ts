@@ -25,10 +25,33 @@ export const refreshToken = () => {
   });
 };
 
-
 export const subscribeToChannel = (channelId: string) => {
   return apiRequest<SubscribeResponse>({
     method: "PUT",
     url: `/sub/c/${channelId}`,
   });
 };
+
+// Channel page specific API calls
+
+export const getChannelVideos = (userId: string) => {
+  return apiRequest<{ data: any }>({
+    method: "GET",
+    url: `/video/user/${userId}`,
+  });
+};
+
+export const getChannelPlaylists = (userId: string) => {
+  return apiRequest<{ success: boolean; data: any[] }>({
+    method: "GET",
+    url: `/playlist/user/${userId}`,
+  });
+};
+
+export const getChannelTweets = (userId: string) => {
+  return apiRequest<{ data: any[] }>({
+    method: "GET",
+    url: `/tweet/user/${userId}`,
+  });
+};
+

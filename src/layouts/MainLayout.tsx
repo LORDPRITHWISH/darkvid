@@ -9,7 +9,7 @@ const MainLayout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="flex-grow bg-slate-950 w-full overflow-clip">
+      <div className="flex-grow bg-zinc-950 w-full overflow-clip">
         {/* <Sidelink /> */}
         <Outlet />
         <Sidebar />
