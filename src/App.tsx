@@ -32,6 +32,7 @@ import AdminLayout from "./layouts/AdminLayout.js";
 import Setdata from "./components/Setdata.js";
 import AdminUserManagement from "./pages/admin/management/AdminUserManagement.js";
 import AdminVideoManagement from "./pages/admin/management/AdminVideoManagement.js";
+import StudioLayout from "./layouts/StudioLayout.js";
 
 const RootLayout = () => {
   return (
@@ -87,7 +88,9 @@ const router = createBrowserRouter(
             <Route index element={<UploadVideoPage />} />
             <Route path=":videoid" element={<Upload />} />
           </Route>
-          <Route path="studio/" element={<StudioPage />} />
+          <Route path="studio/" element={<StudioLayout />} >
+            <Route index element={<StudioPage />} />
+          </Route>
           <Route path="settings/" element={<Profile />} />
           <Route path="subsciption/" element={<Profile />} />
           <Route path="chat/" element={<Profile />}>
