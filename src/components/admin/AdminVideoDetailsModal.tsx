@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { GenericSubResourceTable } from "@/components/admin/GenericSubResourceTable";
 import { userColumns, commentColumns } from "@/components/admin/SharedColumns";
-import { AdminVideo } from "@/pages/admin/management/AdminVideoManagement";
+import type { AdminVideo } from "@/pages/admin/management/AdminVideoManagement";
 
 interface Props {
   isOpen: boolean;

@@ -5,7 +5,6 @@ import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router";
 import { logoutUser } from "@/services/auth.service";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
-import { Button } from "./ui/button";
 
 export function AvatarDropdown() {
   const { profilePhoto, name, username, logout, role, email } = useUserStore((s) => s);

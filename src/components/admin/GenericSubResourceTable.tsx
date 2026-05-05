@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/api/apiClient";
-import { DataTable, ColumnDef, PaginationData } from "./DataTable";
+import { DataTable } from "./DataTable";
+import type { ColumnDef, PaginationData } from "./DataTable";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 

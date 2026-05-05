@@ -108,7 +108,8 @@ export default function SignupForm() {
           return;
         }
 
-        setUser(loginResponse.data.user._id, loginResponse.data.user.name, loginResponse.data.user.profilepic, loginResponse.data.user.email);
+        const user = loginResponse.data.user;
+        setUser(user._id, user.username, user.name, user.profilepic, user.email, user.role);
         navigate("/"); // Redirect to home or dashboard after successful signup
       } catch (e) {
         console.error("Error setting user in store:", e);

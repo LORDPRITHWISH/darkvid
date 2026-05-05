@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { apiRequest } from "@/api/apiClient";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Eye, MoreHorizontal, Video, Globe2, Lock, Clock, ThumbsUp, MessageSquare, Play, Calendar } from "lucide-react";
+import { Eye, MoreHorizontal, Video, Globe2, Lock, ThumbsUp, MessageSquare, Play } from "lucide-react";
 import moment from "moment";
-import { DataTable, ColumnDef, PaginationData } from "@/components/admin/DataTable";
+import { DataTable } from "@/components/admin/DataTable";
+import type { ColumnDef, PaginationData } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

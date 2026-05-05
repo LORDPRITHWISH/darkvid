@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ColumnDef } from "@/components/admin/DataTable";
+import type { ColumnDef } from "@/components/admin/DataTable";
 import moment from "moment";
 
 export const videoColumns: ColumnDef<any>[] = [
