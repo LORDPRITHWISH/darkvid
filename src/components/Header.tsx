@@ -34,7 +34,7 @@ const Header = () => {
       <div className="flex items-center gap-4 px-4">
         {location.pathname !== "/upload" && (
           <button
-            className="text-white p-2 px-3 text-sm rounded-xl bg-slate-900 hover:bg-slate-600 transition duration-200 flex items-center "
+            className="text-white p-2 px-3 text-sm rounded-xl bg-slate-700/40 hover:bg-slate-600 transition duration-200 flex items-center "
             onClick={() => navigate("/upload")}>
             <FaPlus className="mr-2 " size={20} />
             Create

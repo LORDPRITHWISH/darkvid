@@ -9,12 +9,24 @@ import { useUserStore } from "@/store/userStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+// types & helpers
 import {
-  type ChannelData, type VideoItem, type PlaylistItem, type TweetItem, type Tab,
-  formatSubs, VideoCard, ShortCard, PlaylistCard, PostCard,
-  VideoGridSkeleton, EmptyState, ScrollRow, SectionHeader,
-  BannerEditButton, AvatarEditButton, UploadToast, FilterChip,
-} from "./ChannelParts";
+  type ChannelData, type VideoItem, type PlaylistItem,
+  type TweetItem, type Tab, formatSubs,
+} from "./types/channel.types";
+// components
+import VideoCard from "./components/VideoCard";
+import ShortCard from "./components/ShortCard";
+import PlaylistCard from "./components/PlaylistCard";
+import PostCard from "./components/PostCard";
+import VideoGridSkeleton from "./components/VideoGridSkeleton";
+import EmptyState from "./components/EmptyState";
+import ScrollRow from "./components/ScrollRow";
+import SectionHeader from "./components/SectionHeader";
+import BannerEditButton from "./components/BannerEditButton";
+import AvatarEditButton from "./components/AvatarEditButton";
+import UploadToast from "./components/UploadToast";
+import FilterChip from "./components/FilterChip";
 
 // ─── Tab config ───────────────────────────────────────────────────────────────
 const TABS: { key: Tab; label: string }[] = [
@@ -129,8 +141,11 @@ export default function Channel() {
     try {
       const fd = new FormData();
       fd.append("profilepic", file);
-      const res: any = await apiRequest({ method: "PATCH", url: "/user/avatar", data: fd,
-        config: { headers: { "Content-Type": "multipart/form-data" } } });
+      const res: any = await apiRequest({
+        method: "PATCH",
+        url: "/user/avatar",
+        data: fd,
+      });
       if (res?.data?.profilepic) {
         setChannel(p => p ? { ...p, profilepic: res.data.profilepic } : p);
         showToast("avatar");
@@ -146,8 +161,11 @@ export default function Channel() {
     try {
       const fd = new FormData();
       fd.append("coverimage", file);
-      const res: any = await apiRequest({ method: "PATCH", url: "/user/cover", data: fd,
-        config: { headers: { "Content-Type": "multipart/form-data" } } });
+      const res: any = await apiRequest({
+        method: "PATCH",
+        url: "/user/cover",
+        data: fd,
+      });
       if (res?.data?.coverimage) {
         setChannel(p => p ? { ...p, coverimage: res.data.coverimage } : p);
         showToast("cover");
