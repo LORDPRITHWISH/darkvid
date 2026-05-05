@@ -33,6 +33,16 @@ import Setdata from "./components/Setdata.js";
 import AdminUserManagement from "./pages/admin/management/AdminUserManagement.js";
 import AdminVideoManagement from "./pages/admin/management/AdminVideoManagement.js";
 import StudioLayout from "./layouts/StudioLayout.js";
+import StudioDashboard from "./pages/studio/StudioDashboard.js";
+import StudioAnalytics from "./pages/studio/StudioAnalytics.js";
+import StudioCommunity from "./pages/studio/StudioCommunity.js";
+import StudioCustomisation from "./pages/studio/StudioCustomisation.js";
+import {
+  StudioSubtitles,
+  StudioEarn,
+  StudioAudioLibrary,
+  StudioSettings,
+} from "./pages/studio/StudioStubs.js";
 
 const RootLayout = () => {
   return (
@@ -88,8 +98,16 @@ const router = createBrowserRouter(
             <Route index element={<UploadVideoPage />} />
             <Route path=":videoid" element={<Upload />} />
           </Route>
-          <Route path="studio/" element={<StudioLayout />} >
-            <Route index element={<StudioPage />} />
+          <Route path="studio/" element={<StudioLayout />}>
+            <Route index element={<StudioDashboard />} />
+            <Route path="content" element={<StudioPage />} />
+            <Route path="analytics" element={<StudioAnalytics />} />
+            <Route path="community" element={<StudioCommunity />} />
+            <Route path="customisation" element={<StudioCustomisation />} />
+            <Route path="subtitles" element={<StudioSubtitles />} />
+            <Route path="earn" element={<StudioEarn />} />
+            <Route path="audio-library" element={<StudioAudioLibrary />} />
+            <Route path="settings" element={<StudioSettings />} />
           </Route>
           <Route path="settings/" element={<Profile />} />
           <Route path="subsciption/" element={<Profile />} />
